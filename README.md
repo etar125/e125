@@ -38,12 +38,24 @@ int main()
 
 ## Сделано
 
-Ничего.
+* `Move` Копирует данные
+** `MoveA`(10) `adr <- value`
+** `MoveB`(11) `adr <- adr`
+
+* `Add` Складывает
+** `AddA`(30) `adr <- adr1 + adr2`
+** `AddB`(31) `adr <- adr1 + value`
+** `AddC`(32) `adr <- value + value`
+
+* `Substract` Вычитает
+** `SubstractA`(40) `adr <- adr1 - adr2`
+** `SubstractB`(41) `adr <- adr1 - value`
+** `SubstractC`(42) `adr <- value - adr2`
+** `SubstractD`(43) `adr <- value - value`
 
 ## Запланировано
 
-* `Move` Копирует данные из одной ячейки в другую
-* `Add`/`Substract`/`Multiply`/`Division` Арифметические операции
+* `Multiply`/`Division` Арифметические операции
 * `Jump` Переходит к указанному адресу
 * `Compare` Сверяет первый и второй аргумент, результат записывается в первую ячейку
 * `Jump-If-Equals`/`Jump-If-Not-Equals`/`...` Переходит к указанному адресу, если результат сверения равен ...
