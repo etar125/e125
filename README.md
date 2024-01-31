@@ -23,7 +23,7 @@ using byte = unsigned char;
 int main()
 {
 	// add 10 15 5
-	LoadToMemory(33, 4);
+	LoadToMemory(32, 4);
 	LoadToMemory(10, 5);
 	LoadToMemory(15, 6);
 	LoadTomemory(5, 7);
