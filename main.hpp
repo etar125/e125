@@ -2,7 +2,7 @@
 
 using byte = unsigned char;
 
-byte memory[1024] : 0;
+byte memory[1024];
 const byte registers = 0;
 const byte other = 4;
 byte position = 0;
@@ -35,10 +35,10 @@ enum Opcodes : byte
 	MultiplyB = 51,
 	MultiplyC = 52,
 	MultiplyD = 53,
-	SubstractA = 40, // ^^^
-	SubstractB = 41,
-	SubstractC = 42,
-	SubstractD = 43,
+	DivisionA = 60, // ^^^
+	DivisionB = 61,
+	DivisionC = 62,
+	DivisionD = 63,
 	End = 70
 };
 
@@ -53,13 +53,109 @@ void Run(byte Position)
 
 			if(opcode == Opcodes::End) break;
 
-			else if(opcode == Opcodes::Move)
+
+
+			else if(opcode == Opcodes::MoveA)
 			{
 				position++;
 				byte adress = GetFromMemory(position);
 				position++;
 				byte what = GetFromMemory(position);
 				LoadToMemory(what, adress);
+			}
+			else if(opcode == Opcodes::MoveB)
+			{
+				position++;
+				byte adress = GetFromMemory(position);
+				position++;
+				byte what = GetFromMemory(GetFromMemory(position));
+				LoadToMemory(what, adress);
+			}
+
+
+
+			else if(opcode == Opcodes::AddA)
+			{
+				position++;
+				byte adress = GetFromMemory(position);
+				position++;
+				byte what1 = GetFromMemory(GetFromMemory(position));
+				position++;
+				byte what2 = GetFromMemory(GetFromMemory(position));
+				LoadToMemory(what1 + what2, adress);
+			}
+			else if(opcode == Opcodes::AddB)
+			{
+				position++;
+				byte adress = GetFromMemory(position);
+				position++;
+				byte what1 = GetFromMemory(GetFromMemory(position));
+				position++;
+				byte what2 = GetFromMemory(position);
+				LoadToMemory(what1 + what2, adress);
+			}
+			else if(opcode == Opcodes::AddC)
+			{
+				position++;
+				byte adress = GetFromMemory(position);
+				position++;
+				byte what1 = GetFromMemory(position);
+				position++;
+				byte what2 = GetFromMemory(GetFromMemory(position));
+				LoadToMemory(what1 + what2, adress);
+			}
+			else if(opcode == Opcodes::AddD)
+			{
+				position++;
+				byte adress = GetFromMemory(position);
+				position++;
+				byte what1 = GetFromMemory(position);
+				position++;
+				byte what2 = GetFromMemory(position);
+				LoadToMemory(what1 + what2, adress);
+			}
+
+
+
+			else if(opcode == Opcodes::SubstractA)
+			{
+				position++;
+				byte adress = GetFromMemory(position);
+				position++;
+				byte what1 = GetFromMemory(GetFromMemory(position));
+				position++;
+				byte what2 = GetFromMemory(GetFromMemory(position));
+				LoadToMemory(what1 - what2, adress);
+			}
+			else if(opcode == Opcodes::SubstractB)
+			{
+				position++;
+				byte adress = GetFromMemory(position);
+				position++;
+				byte what1 = GetFromMemory(GetFromMemory(position));
+				position++;
+				byte what2 = GetFromMemory(position);
+				LoadToMemory(what1 - what2, adress);
+			}
+			else if(opcode == Opcodes::SubstractC)
+			{
+				position++;
+				byte adress = GetFromMemory(position);
+				position++;
+				byte what1 = GetFromMemory(position);
+				position++;
+				byte what2 = GetFromMemory(GetFromMemory(position));
+				LoadToMemory(what1 - what2, adress);
+			}
+			else if(opcode == Opcodes::SubstractD)
+			{
+				position++;
+				byte adress = GetFromMemory(position);
+				position++;
+				byte what1 = GetFromMemory(position);
+				position++;
+				byte what2 = GetFromMemory(position);
+				LoadToMemory(what1 - what2, adress);
 			}
 		}
 		position = 0;
