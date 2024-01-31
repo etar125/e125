@@ -6,7 +6,7 @@
 
 `byte` = `unsigned char`
 
-`LoadToMemory`: `byte Байт` `byte Позиция` (невозможно поместить в первые три байта)
+`LoadToMemory`: `byte Байт` `byte Позиция` (невозможно поместить в первые три байта)  
 `GetFromMemory`: `byte Позиция` (возвращает `byte`)
 
 `Run`: `byte Позиция`
