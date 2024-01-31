@@ -6,7 +6,7 @@ using byte = unsigned char;
 int main()
 {
 
-	LoadToMemory(33, 4);
+	LoadToMemory(32, 4);
 	LoadToMemory(9, 5);
 	LoadToMemory(21, 6);
 	LoadToMemory(70, 7);
