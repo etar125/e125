@@ -30,7 +30,7 @@ int main()
 	LoadToMemory(70, 8); // !!! Обязательно !!! Это значит конец выполнения
 	Run(4);
 
-	std::cout << GetFromMemory(10) << std::endl;
+	std::cout << (int)(GetFromMemory(10)) << std::endl;
 
 	return 0;
 }
