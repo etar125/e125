@@ -25,8 +25,7 @@ enum Opcodes : byte
 	JumpB = 21,
 	AddA = 30, // add adr adr1 adr2
 	AddB = 31, // add adr adr1 value
-	AddC = 32, // add adr value adr2
-	AddD = 33, // add adr value value
+	AddC = 32, // add adr value value
 	SubstractA = 40, // ^^^
 	SubstractB = 41,
 	SubstractC = 42,
@@ -95,16 +94,6 @@ void Run(byte Position)
 				LoadToMemory(what1 + what2, adress);
 			}
 			else if(opcode == Opcodes::AddC)
-			{
-				position++;
-				byte adress = GetFromMemory(position);
-				position++;
-				byte what1 = GetFromMemory(position);
-				position++;
-				byte what2 = GetFromMemory(GetFromMemory(position));
-				LoadToMemory(what1 + what2, adress);
-			}
-			else if(opcode == Opcodes::AddD)
 			{
 				position++;
 				byte adress = GetFromMemory(position);
