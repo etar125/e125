@@ -17,9 +17,10 @@ void RunPC(PC pc, std::vector<byte> code, bool wm)
 	pc.Run(appstart);
 	if(wm)
 	{
-		std::ostream file("memory-" + code.size() + ".txt");
+		std::string name = "mem-" + std::to_string(code.size());
+		std::ofstream file(name);
 		std::string result;
-		for(byte n : code)
+		for(byte n : pc.memory)
 		{
 			result += n;
 		}
@@ -48,7 +49,7 @@ int main(int argc, char *argv[])
 			std::string arg = argv[i];
 			if (arg == "-w") write_memory = true;
 			else if (arg == "-o") onepc = true;
-			files.push_back(arg);
+			else files.push_back(arg);
 		}
 	}
 	if(files.size() == 0) codes.push_back(code);
