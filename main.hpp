@@ -41,7 +41,7 @@ public:
 		DivisionB = 61,
 		DivisionC = 62,
 		DivisionD = 63,
-		End = 70
+		End = 1
 	};
 
 	void Run(byte Position)
