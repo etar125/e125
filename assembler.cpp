@@ -57,16 +57,16 @@ int main(int argc, char *argv[])
 	if(argc > 1)
 	{
 		std::string ar = argv[1];
-		if (ar == "--help" || ar == "--ver" || ar == "--v")
+		if (ar == "-help" || ar == "-ver" || ar == "-v")
 		{
 			std::cout << "e125 assembler v" << ver << "." << subver << std::endl << std::endl;
 			std::cout << "файл [опции]" << std::endl;
-			std::cout << "--help --ver --v   Показывает информацию" << std::endl << std::endl;
-			std::cout << "--nw   Не записавать результат в файл" << std::endl;
-			std::cout << "--nl   Не выводить логотип" << std::endl;
-			std::cout << "--pr   Вывести результат" << std::endl << std::endl;
-			std::cout << "--o   Файл для записи" << std::endl;
-			std::cout << "--a   Задаёт начало программы" << std::endl;
+			std::cout << "-help -ver -v   Показывает информацию" << std::endl << std::endl;
+			std::cout << "-nw   Не записавать результат в файл" << std::endl;
+			std::cout << "-nl   Не выводить логотип" << std::endl;
+			std::cout << "-pr   Вывести результат" << std::endl << std::endl;
+			std::cout << "-o   Файл для записи" << std::endl;
+			std::cout << "-a   Задаёт начало программы" << std::endl;
 			return 0;
 		}
 		else
@@ -74,16 +74,16 @@ int main(int argc, char *argv[])
 			for(int i = 1; i < argc; i++)
 			{
 				std::string arg = argv[i];
-				if(arg == "--nw") nw = true;
-				else if(arg == "--nl") nl = true;
-				else if(arg == "--pr") pr = true;
+				if(arg == "-nw") nw = true;
+				else if(arg == "-nl") nl = true;
+				else if(arg == "-pr") pr = true;
 
-				else if(arg == "--o")
+				else if(arg == "-o")
 				{
 					i++;
 					output = arg;
 				}
-				else if(arg == "--a")
+				else if(arg == "-a")
 				{
 					i++;
 					appstart = std::stoi(arg);
@@ -108,9 +108,11 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	std::vector<std::string> result;
+	//std::vector<std::string> result;
 
-	int count = appstart;
+	//int count = appstart;
+	std::string result;
+	result += appstart;
 
 	while (std::getline(fin, str))
 	{
@@ -123,9 +125,9 @@ int main(int argc, char *argv[])
 
 			if(ins[0] == "mov")
 			{
-				int com;
+				int com = 0;
 				int adr = std::stoi(ins[1]);
-				int val;
+				int val = 0;
 
 				if(ins[2].substr(0, 1) == "$")
 				{
@@ -138,28 +140,83 @@ int main(int argc, char *argv[])
 					val = std::stoi(ins[2]);
 				}
 
-				std::string temp = "";
+				result += com;
+				result += adr;
+				result += val;
+			}
+			else if(ins[0] == "add")
+			{
+				int com = 0;
+				int adr = std::stoi(ins[1]);
+				int val = 0;
+				int val2 = 0;
+				bool oa = true;
+				bool ta = true;
 
-				temp = "LoadToMemory(" + std::to_string(com) + "," + std::to_string(count) + ");";
-				count++;
-				result.push_back(temp);
+				if(ins[2].substr(0, 1) == "$")
+				{
+					oa = false;
+					val = std::stoi(ins[2].substr(1, ins[2].size() - 1));
+				}
+				if(ins[3].substr(0, 1) == "$")
+				{
+					ta = false;
+					val2 = std::stoi(ins[3].substr(1, ins[3].size() - 1));
+				}
 
-				temp = "LoadToMemory(" + std::to_string(adr) + "," + std::to_string(count) + ");";
-				count++;
-				result.push_back(temp);
+				if(oa && ta) com = 30;
+				else if(oa && !ta) com = 31;
+				else if(!oa && !ta) com = 32;
+				else if(!oa && ta)
+				{
+					com = 31;
+					int tmp = val;
+					val = val2;
+					val2 = tmp;
+				}
 
-				temp = "LoadToMemory(" + std::to_string(val) + "," + std::to_string(count) + ");";
-				count++;
-				result.push_back(temp);
+				result += com;
+				result += adr;
+				result += val;
+				result += val2;
+			}
+			else if(ins[0] == "sub")
+			{
+				int com = 0;
+				int adr = std::stoi(ins[1]);
+				int val = 0;
+				int val2 = 0;
+				bool oa = true;
+				bool ta = true;
+
+				if(ins[2].substr(0, 1) == "$")
+				{
+					oa = false;
+					val = std::stoi(ins[2].substr(1, ins[2].size() - 1));
+				}
+				if(ins[3].substr(0, 1) == "$")
+				{
+					ta = false;
+					val2 = std::stoi(ins[3].substr(1, ins[3].size() - 1));
+				}
+
+				if(oa && ta) com = 40;
+				else if(oa && !ta) com = 41;
+				else if(!oa && ta) com = 42;
+				else if(!oa && !ta) com = 43;
+
+				result += com;
+				result += adr;
+				result += val;
+				result += val2;
 			}
 		}
 	}
 
-	for(std::string s : result)
-	{
-		if(pr) std::cout << s << std::endl;
-		if(!nw) fout << s << std::endl;
-	}
+	result += 1;
+
+	if(pr) std::cout << result << std::endl;
+	if(!nw) fout << result;
 
 	return 0;
 }
