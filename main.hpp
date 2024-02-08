@@ -24,20 +24,19 @@ public:
 	{
 		MoveA = 10, // move ADR value
 		MoveB = 11, // move ADR adr
-		JumpA = 20, // ^^^
-		JumpB = 21,
+		JumpA = 20, // jump value
+		JumpB = 21, // jump adr
 		AddA = 30, // add adr adr1 adr2
 		AddB = 31, // add adr adr1 value
 		AddC = 32, // add adr value value
 		SubstractA = 40, // ^^^
 		SubstractB = 41,
-		SubstractC = 42,
-		SubstractD = 43,
-		MultiplyA = 50, // ^^^
+		SubstractC = 42, // sub adr value adr2
+		SubstractD = 43, // sub adr val val
+		MultiplyA = 50, // like add
 		MultiplyB = 51,
 		MultiplyC = 52,
-		MultiplyD = 53,
-		DivisionA = 60, // ^^^
+		DivisionA = 60, // like substract
 		DivisionB = 61,
 		DivisionC = 62,
 		DivisionD = 63,
