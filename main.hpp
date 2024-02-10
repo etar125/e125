@@ -148,6 +148,82 @@ public:
 					byte what2 = GetFromMemory(position);
 					LoadToMemory(what1 - what2, adress);
 				}
+
+
+
+				else if(opcode == Opcodes::MultiplyA)
+				{
+					position++;
+					byte adress = GetFromMemory(position);
+					position++;
+					byte what1 = GetFromMemory(GetFromMemory(position));
+					position++;
+					byte what2 = GetFromMemory(GetFromMemory(position));
+					LoadToMemory(what1 * what2, adress);
+				}
+				else if(opcode == Opcodes::MultiplyB)
+				{
+					position++;
+					byte adress = GetFromMemory(position);
+					position++;
+					byte what1 = GetFromMemory(GetFromMemory(position));
+					position++;
+					byte what2 = GetFromMemory(position);
+					LoadToMemory(what1 * what2, adress);
+				}
+				else if(opcode == Opcodes::MultiplyC)
+				{
+					position++;
+					byte adress = GetFromMemory(position);
+					position++;
+					byte what1 = GetFromMemory(position);
+					position++;
+					byte what2 = GetFromMemory(position);
+					LoadToMemory(what1 * what2, adress);
+				}
+
+
+
+				else if(opcode == Opcodes::DivisionA)
+				{
+					position++;
+					byte adress = GetFromMemory(position);
+					position++;
+					byte what1 = GetFromMemory(GetFromMemory(position));
+					position++;
+					byte what2 = GetFromMemory(GetFromMemory(position));
+					LoadToMemory(what1 / what2, adress);
+				}
+				else if(opcode == Opcodes::DivisionB)
+				{
+					position++;
+					byte adress = GetFromMemory(position);
+					position++;
+					byte what1 = GetFromMemory(GetFromMemory(position));
+					position++;
+					byte what2 = GetFromMemory(position);
+					LoadToMemory(what1 / what2, adress);
+				}
+				else if(opcode == Opcodes::DivisionC)
+				{
+					position++;
+					byte adress = GetFromMemory(position);
+					position++;
+					byte what1 = GetFromMemory(position);
+					position++;
+					byte what2 = GetFromMemory(GetFromMemory(position));
+					LoadToMemory(what1 / what2, adress);
+				}
+				else if(opcode == Opcodes::DivisionD)
+				{
+					position++;
+					byte adress = GetFromMemory(position);
+					position++;
+					byte what1 = GetFromMemory(position);
+					position++;
+					byte what2 = GetFromMemory(position);
+					LoadToMemory(what1 / what2, adress);
+				}
 			}
 			position = 0;
 		}
