@@ -5,7 +5,7 @@ using byte = unsigned char;
 class PC
 {
 public:
-	byte memory[1024];
+	byte memory[255];
 	const byte registers = 0;
 	const byte other = 4;
 	byte position = 0;
@@ -24,22 +24,34 @@ public:
 	{
 		MoveA = 10, // move ADR value
 		MoveB = 11, // move ADR adr
+
 		JumpA = 20, // jump value
 		JumpB = 21, // jump adr
+
+		JumpZeroA = 22, // jump adr value
+		JumpZeroB = 23, // jump adr adr
+
+		JumpNotZeroA = 24, // jump adr value
+		JumpNotZeroB = 25, // jump adr adr
+
 		AddA = 30, // add adr adr1 adr2
 		AddB = 31, // add adr adr1 value
 		AddC = 32, // add adr value value
+
 		SubstractA = 40, // ^^^
 		SubstractB = 41,
 		SubstractC = 42, // sub adr value adr2
+
 		SubstractD = 43, // sub adr val val
 		MultiplyA = 50, // like add
 		MultiplyB = 51,
 		MultiplyC = 52,
+
 		DivisionA = 60, // like substract
 		DivisionB = 61,
 		DivisionC = 62,
 		DivisionD = 63,
+
 		End = 1
 	};
 
@@ -48,7 +60,7 @@ public:
 		if(Position >= other)
 		{
 			position = Position;
-			for(; position < 1024; position++)
+			for(; position < 255; position++)
 			{
 				byte opcode = GetFromMemory(position);
 
@@ -223,6 +235,13 @@ public:
 					position++;
 					byte what2 = GetFromMemory(position);
 					LoadToMemory(what1 / what2, adress);
+				}
+
+				else if(opcode == Opcodes::JumpA)
+				{
+					position++;
+					byte adress = GetFromMemory(position);
+					position = adress;
 				}
 			}
 			position = 0;
