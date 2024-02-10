@@ -237,11 +237,38 @@ public:
 					LoadToMemory(what1 / what2, adress);
 				}
 
+
+
 				else if(opcode == Opcodes::JumpA)
 				{
 					position++;
 					byte adress = GetFromMemory(position);
 					position = adress;
+				}
+				else if(opcode == Opcodes::JumpB)
+				{
+					position++;
+					byte adress = GetFromMemory(GetFromMemory(position));
+					position = adress;
+				}
+
+
+
+				else if(opcode == Opcodes::JumpZeroA)
+				{
+					position++;
+					byte adress = GetFromMemory(GetFromMemory(position));
+					position++;
+					byte to = GetFromMemory(position);
+					if(adress == 0) position = adress;
+				}
+				else if(opcode == Opcodes::JumpZeroB)
+				{
+					position++;
+					byte adress = GetFromMemory(GetFromMemory(position));
+					position++;
+					byte to = GetFromMemory(GetFromMemory(position));
+					if(adress == 0) position = adress;
 				}
 			}
 			position = 0;
