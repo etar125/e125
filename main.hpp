@@ -7,7 +7,10 @@ class PC
 public:
 	byte memory[255];
 	const byte registers = 0;
-	const byte other = 4;
+	const byte StackPointer = 0;
+	const byte StackStart = 4;
+	const byte StackSize = 16;
+	const byte other = 20;
 	byte position = 0;
 
 	void LoadToMemory(byte Byte, byte Position)
@@ -41,8 +44,8 @@ public:
 		SubstractA = 40, // ^^^
 		SubstractB = 41,
 		SubstractC = 42, // sub adr value adr2
-
 		SubstractD = 43, // sub adr val val
+
 		MultiplyA = 50, // like add
 		MultiplyB = 51,
 		MultiplyC = 52,
@@ -51,6 +54,8 @@ public:
 		DivisionB = 61,
 		DivisionC = 62,
 		DivisionD = 63,
+
+		PushA = 70
 
 		End = 1
 	};
@@ -269,6 +274,23 @@ public:
 					position++;
 					byte to = GetFromMemory(GetFromMemory(position));
 					if(adress == 0) position = adress;
+				}
+
+				else if(opcode == Opcodes::JumpNotZeroA)
+				{
+					position++;
+					byte adress = GetFromMemory(GetFromMemory(position));
+					position++;
+					byte to = GetFromMemory(position);
+					if(adress != 0) position = adress;
+				}
+				else if(opcode == Opcodes::JumpNotZeroB)
+				{
+					position++;
+					byte adress = GetFromMemory(GetFromMemory(position));
+					position++;
+					byte to = GetFromMemory(GetFromMemory(position));
+					if(adress != 0) position = adress;
 				}
 			}
 			position = 0;
