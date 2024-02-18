@@ -57,6 +57,18 @@ mov 127 129
 - - `SubstractB`(41) `adr <- adr1 - value`
 - - `SubstractC`(42) `adr <- value - adr2`
 - - `SubstractD`(43) `adr <- value - value`
+
+- `Multiply` Умножает
+- - `MultiplyA`(50) `adr <- adr1 * adr2`
+- - `MultiplyB`(51) `adr <- adr1 * value`
+- - `MultiplyC`(52) `adr <- value * value`
+
+- `Division` Делит
+- - `DivisionA`(60) `adr <- adr1 / adr2`
+- - `DivisionB`(61) `adr <- adr1 / value`
+- - `DivisionC`(62) `adr <- value / adr2`
+- - `DivisionD`(63) `adr <- value / value`
+
 - Ассемблер
 
 - `Jump` Переходит к указанному адресу
@@ -73,7 +85,6 @@ mov 127 129
 
 ## Запланировано
 
-- `Multiply`/`Division` Арифметические операции
 - `Compare` Сверяет первый и второй аргумент, результат записывается в первую ячейку
 - `Jump-If-Equals`/`Jump-If-Not-Equals`/`...` Переходит к указанному адресу, если результат сверения равен ...
 - Компилятор какого-нибудь языка
@@ -81,5 +92,6 @@ mov 127 129
 - Компилятор Brainfuck
 - Стэк
 - `Push` Ложит в стэк
+- `Call`/`Return`
 - Поддержка расширений
 - Возможность транслировать байт-код в языки программирования C++, C#, Python, Visual Basic .NET, SS.
