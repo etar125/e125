@@ -67,7 +67,7 @@ mov 127 129
 - - `Jump-If-ZeroA`(22) `adr value`
 - - `Jump-If-ZeroB`(23) `adr adr`
 
-- `Jump-If-Not-Zero` Переходит к указанному адресу, если значение равно нулю
+- `Jump-If-Not-Zero` Переходит к указанному адресу, если значение не равно нулю
 - - `Jump-If-Not-ZeroA`(24) `adr value`
 - - `Jump-If-Not-ZeroB`(25) `adr adr`
 
