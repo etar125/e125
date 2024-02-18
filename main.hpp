@@ -7,10 +7,10 @@ class PC
 public:
 	byte memory[255];
 	const byte registers = 0;
-	const byte StackPointer = 0;
-	const byte StackStart = 4;
-	const byte StackSize = 16;
-	const byte other = 20;
+	//const byte StackPointer = 0;
+	//const byte StackStart = 4;
+	//const byte StackSize = 16;
+	const byte other = 4;
 	byte position = 0;
 
 	void LoadToMemory(byte Byte, byte Position)
@@ -55,7 +55,8 @@ public:
 		DivisionC = 62,
 		DivisionD = 63,
 
-		PushA = 70
+		//PushA = 70, // push value
+		//PushB = 71, // push adr
 
 		End = 1
 	};
