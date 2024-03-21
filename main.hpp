@@ -166,22 +166,18 @@ void Do(std::string command, std::vector<std::string> args )
 	}
 	else if(command == "help")
 	{
-		std::cout << 	"new <value>          Creates new machine\n
-						del <value>           Deletes machine\n
-						list                  Shows all machines\n
-						set <index> <value>   Sets value\n
-						clear                 Clears screen\n
-						clearc                Clears machine code\n
-						ch <value>            Chooses machine\n
-						run <index>           Runs machine code\n\n
-
-
-						load <value>          Loads file\n
-						loadr <value>         Loads file and runs it\n\n
-
-
-						print <index>         Prints value\n
-						print <index> <len>   Prints values" << std::endl;
+		std::cout << 	"new <value>           Creates new machine\n" <<
+						"del <value>           Deletes machine\n" <<
+						"list                  Shows all machines\n" <<
+						"set <index> <value>   Sets value\n" <<
+						"clear                 Clears screen\n" <<
+						"clearc                Clears machine code\n" <<
+						"ch <value>            Chooses machine\n" <<
+						"run <index>           Runs machine code\n\n" <<
+						"load <value>          Loads file\n" <<
+						"loadr <value>         Loads file and runs it\n\n" <<
+						"print <index>         Prints value\n" <<
+						"print <index> <len>   Prints values" << std::endl;
 	}
 	else if(command == "ver" || command == "version") std::cout << lblue << version << reset << std::endl;
 }
