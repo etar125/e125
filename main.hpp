@@ -3,7 +3,7 @@
 #include <fstream>
 #include "machine.hpp"
 
-std::string version = "2.24.3_17";
+std::string version = "2.24.3_21";
 std::string green = "\033[32m";
 std::string red = "\033[31m";
 std::string yellow = "\033[33m";
@@ -164,6 +164,24 @@ void Do(std::string command, std::vector<std::string> args )
 		}
 		else std::cout << red << "Wrong arguments!" << reset << std::endl;
 	}
-	else if(command == "help") std::cout << "new <value>   Creates new machine\ndel <value> Deletes machine\nlist   Shows all machines\nset <index> <value>   Sets value\nclear   Clears screen\nclearc   Clears machine code\nch <value>   Chooses machine\nrun <index>   Runs machine code\n\nload <value>   Loads file\nloadr <value>   Loads file and runs it\n\nprint <index>    Prints value\nprint <index> <length>   Prints values" << std::endl;
+	else if(command == "help")
+	{
+		std::cout << 	"new <value>          Creates new machine\n
+						del <value>           Deletes machine\n
+						list                  Shows all machines\n
+						set <index> <value>   Sets value\n
+						clear                 Clears screen\n
+						clearc                Clears machine code\n
+						ch <value>            Chooses machine\n
+						run <index>           Runs machine code\n\n
+
+
+						load <value>          Loads file\n
+						loadr <value>         Loads file and runs it\n\n
+
+
+						print <index>         Prints value\n
+						print <index> <len>   Prints values" << std::endl;
+	}
 	else if(command == "ver" || command == "version") std::cout << lblue << version << reset << std::endl;
 }
