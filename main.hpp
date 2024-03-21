@@ -1,300 +1,169 @@
 #include <iostream>
+#include <vector>
+#include <fstream>
+#include "machine.hpp"
+
+std::string version = "2.24.3_17";
+std::string green = "\033[32m";
+std::string red = "\033[31m";
+std::string yellow = "\033[33m";
+std::string lblue = "\033[94m";
+std::string reset = "\033[0m";
 
 using byte = unsigned char;
 
-class PC
+std::vector<Machine> list;
+
+int current = 0;
+
+void LoadCode(Machine pc, std::vector<byte> code, byte appstart)
 {
-public:
-	byte memory[255];
-	const byte registers = 0;
-	//const byte StackPointer = 0;
-	//const byte StackStart = 4;
-	//const byte StackSize = 16;
-	const byte other = 4;
-	byte position = 0;
-
-	void LoadToMemory(byte Byte, byte Position)
+	byte count = 0;
+	for(int i = 1; i < code.size(); i++)
 	{
-		memory[Position] = Byte;
+		pc.LoadToMemory(code[i], appstart + count);
+		count++;
 	}
+}
 
-	byte GetFromMemory(byte Position)
+byte LoadFile(std::string s)
+{
+	std::ifstream file(s);
+	if(!file) std::cout << red << "File does not exist" << reset << std::endl;
+	else
 	{
-		return memory[Position];
+		byte appstart = 0;
+		std::vector<byte> cod;
+		std::string temp;
+		while(std::getline(file, temp)) { for(byte n : temp) { cod.push_back(n); } }
+		appstart = cod[0];
+		cod.erase(cod.begin());
+		LoadCode(list[current], cod, appstart);
+		return appstart;
 	}
+	return -1;
+}
 
-	enum Opcodes : byte
+void LoadRun(std::string s)
+{
+	list[current].Run(LoadFile(s));
+}
+
+void Logo()
+{
+	std::cout << " __  /   _\n/   /|/\\/\n|__  | /|\n|    |/  \\\n\\__  ||__/" << std::endl;
+}
+
+int findm(std::string name)
+{
+	for(int i = 0; i < list.size(); i++)
 	{
-		MoveA = 10, // move ADR value
-		MoveB = 11, // move ADR adr
+		if(list[i].name == name)
+			return i;
+	}
+	return -1;
+}
 
-		JumpA = 20, // jump value
-		JumpB = 21, // jump adr
+void New(std::string name)
+{
+	if(findm(name) == -1) list.push_back(Machine(name));
+	else std::cout << yellow << "Machine with that name has already been created" << reset << std::endl;
+}
 
-		JumpZeroA = 22, // jump adr value
-		JumpZeroB = 23, // jump adr adr
-
-		JumpNotZeroA = 24, // jump adr value
-		JumpNotZeroB = 25, // jump adr adr
-
-		AddA = 30, // add adr adr1 adr2
-		AddB = 31, // add adr adr1 value
-		AddC = 32, // add adr value value
-
-		SubstractA = 40, // ^^^
-		SubstractB = 41,
-		SubstractC = 42, // sub adr value adr2
-		SubstractD = 43, // sub adr val val
-
-		MultiplyA = 50, // like add
-		MultiplyB = 51,
-		MultiplyC = 52,
-
-		DivisionA = 60, // like substract
-		DivisionB = 61,
-		DivisionC = 62,
-		DivisionD = 63,
-
-		//PushA = 70, // push value
-		//PushB = 71, // push adr
-
-		End = 1
-	};
-
-	void Run(byte Position)
+void Delete(std::string name)
+{
+	int ind = findm(name);
+	if(ind != -1)
 	{
-		if(Position >= other)
+		list.erase(list.begin() + ind);
+		if(list.size() == 0) current = -1;
+		else current = 0;
+	}
+	else std::cout << red << "Machine with that name does not exist" << reset << std::endl;
+}
+
+void Choose(std::string name)
+{
+	int ind = findm(name);
+	if(ind != -1) current = ind;
+	else std::cout << red << "Machine with that name does not exist" << reset << std::endl;
+}
+
+void Init()
+{
+	std::cout << "Initialization..." << std::endl;
+	New("DEFAULT");
+	Choose("DEFAULT");
+
+	// тут должна быть проверка установленных расширений, но... их пока нет
+
+	std::cout << "To see all commands, type \"help\"" << std::endl;
+}
+
+void Do(std::string command, std::vector<std::string> args )
+{
+	if(command == "new")
+	{
+		if(args.size() != 1) std::cout << red << "Wrong arguments!" << reset << std::endl;
+		else New(args[0]);
+	}
+	else if(command == "del")
+	{
+		if(args.size() != 1) std::cout << red << "Wrong arguments!" << reset << std::endl;
+		else Delete(args[0]);
+	}
+	else if(command == "list") for(Machine a : list) std::cout << a.name << std::endl;
+	else if(command == "set")
+	{
+		if(args.size() != 2) std::cout << red << "Wrong arguments!" << reset << std::endl;
+		else
 		{
-			position = Position;
-			for(; position < 255; position++)
-			{
-				byte opcode = GetFromMemory(position);
-
-				if(opcode == Opcodes::End) break;
-
-
-
-				else if(opcode == Opcodes::MoveA)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what = GetFromMemory(position);
-					LoadToMemory(what, adress);
-				}
-				else if(opcode == Opcodes::MoveB)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what = GetFromMemory(GetFromMemory(position));
-					LoadToMemory(what, adress);
-				}
-
-
-
-				else if(opcode == Opcodes::AddA)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte what2 = GetFromMemory(GetFromMemory(position));
-					LoadToMemory(what1 + what2, adress);
-				}
-				else if(opcode == Opcodes::AddB)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte what2 = GetFromMemory(position);
-					LoadToMemory(what1 + what2, adress);
-				}
-				else if(opcode == Opcodes::AddC)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(position);
-					position++;
-					byte what2 = GetFromMemory(position);
-					LoadToMemory(what1 + what2, adress);
-				}
-
-
-
-				else if(opcode == Opcodes::SubstractA)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte what2 = GetFromMemory(GetFromMemory(position));
-					LoadToMemory(what1 - what2, adress);
-				}
-				else if(opcode == Opcodes::SubstractB)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte what2 = GetFromMemory(position);
-					LoadToMemory(what1 - what2, adress);
-				}
-				else if(opcode == Opcodes::SubstractC)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(position);
-					position++;
-					byte what2 = GetFromMemory(GetFromMemory(position));
-					LoadToMemory(what1 - what2, adress);
-				}
-				else if(opcode == Opcodes::SubstractD)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(position);
-					position++;
-					byte what2 = GetFromMemory(position);
-					LoadToMemory(what1 - what2, adress);
-				}
-
-
-
-				else if(opcode == Opcodes::MultiplyA)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte what2 = GetFromMemory(GetFromMemory(position));
-					LoadToMemory(what1 * what2, adress);
-				}
-				else if(opcode == Opcodes::MultiplyB)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte what2 = GetFromMemory(position);
-					LoadToMemory(what1 * what2, adress);
-				}
-				else if(opcode == Opcodes::MultiplyC)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(position);
-					position++;
-					byte what2 = GetFromMemory(position);
-					LoadToMemory(what1 * what2, adress);
-				}
-
-
-
-				else if(opcode == Opcodes::DivisionA)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte what2 = GetFromMemory(GetFromMemory(position));
-					LoadToMemory(what1 / what2, adress);
-				}
-				else if(opcode == Opcodes::DivisionB)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte what2 = GetFromMemory(position);
-					LoadToMemory(what1 / what2, adress);
-				}
-				else if(opcode == Opcodes::DivisionC)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(position);
-					position++;
-					byte what2 = GetFromMemory(GetFromMemory(position));
-					LoadToMemory(what1 / what2, adress);
-				}
-				else if(opcode == Opcodes::DivisionD)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position++;
-					byte what1 = GetFromMemory(position);
-					position++;
-					byte what2 = GetFromMemory(position);
-					LoadToMemory(what1 / what2, adress);
-				}
-
-
-
-				else if(opcode == Opcodes::JumpA)
-				{
-					position++;
-					byte adress = GetFromMemory(position);
-					position = adress;
-				}
-				else if(opcode == Opcodes::JumpB)
-				{
-					position++;
-					byte adress = GetFromMemory(GetFromMemory(position));
-					position = adress;
-				}
-
-
-
-				else if(opcode == Opcodes::JumpZeroA)
-				{
-					position++;
-					byte adress = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte to = GetFromMemory(position);
-					if(adress == 0) position = adress;
-				}
-				else if(opcode == Opcodes::JumpZeroB)
-				{
-					position++;
-					byte adress = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte to = GetFromMemory(GetFromMemory(position));
-					if(adress == 0) position = adress;
-				}
-
-				else if(opcode == Opcodes::JumpNotZeroA)
-				{
-					position++;
-					byte adress = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte to = GetFromMemory(position);
-					if(adress != 0) position = adress;
-				}
-				else if(opcode == Opcodes::JumpNotZeroB)
-				{
-					position++;
-					byte adress = GetFromMemory(GetFromMemory(position));
-					position++;
-					byte to = GetFromMemory(GetFromMemory(position));
-					if(adress != 0) position = adress;
-				}
-			}
-			position = 0;
+			byte at = (byte)(std::stoi(args[0]));
+			byte val = (byte)(std::stoi(args[1]));
+			if(at < 4) std::cout << yellow << "Register(0-3) value cannot be changed" << reset << std::endl;
+			else list[current].LoadToMemory(val, at);
 		}
 	}
-};
+	else if(command == "clear") std::cout << "\x1B[2J\x1B[H";
+	else if(command == "clearc") list[current].Clear();
+	else if(command == "ch")
+	{
+		if(args.size() != 1) std::cout << red << "Wrong arguments!" << reset << std::endl;
+		else Choose(args[0]);
+	}
+	else if(command == "run")
+	{
+		if(args.size() != 1) std::cout << red << "Wrong arguments!" << reset << std::endl;
+		else
+		{
+			byte at = (byte)(std::stoi(args[0]));
+			list[current].Run(at);
+		}
+	}
+	else if(command == "load")
+	{
+		if(args.size() != 1) std::cout << red << "Wrong arguments!" << reset << std::endl;
+		else LoadFile(args[0]);
+	}
+	else if(command == "loadr")
+	{
+		if(args.size() != 1) std::cout << red << "Wrong arguments!" << reset << std::endl;
+		else LoadRun(args[0]);
+	}
+	else if(command == "print")
+	{
+		if(args.size() == 1) std::cout << std::to_string(list[current].GetFromMemory((byte)(std::stoi(args[0])))) << std::endl;
+		else if(args.size() == 2)
+		{
+			byte start = (byte)(std::stoi(args[0]));
+			byte len = (byte)(std::stoi(args[1]));
+			byte end = start + len;
+			std::cout << "[ ";
+			for(start; start < end; start++) std::cout << std::to_string(list[current].GetFromMemory(start)) << ", ";
+			std::cout << " ]" << std::endl;
+		}
+		else std::cout << red << "Wrong arguments!" << reset << std::endl;
+	}
+	else if(command == "help") std::cout << "new <value>   Creates new machine\ndel <value> Deletes machine\nlist   Shows all machines\nset <index> <value>   Sets value\nclear   Clears screen\nclearc   Clears machine code\nch <value>   Chooses machine\nrun <index>   Runs machine code\n\nload <value>   Loads file\nloadr <value>   Loads file and runs it\n\nprint <index>    Prints value\nprint <index> <length>   Prints values" << std::endl;
+	else if(command == "ver" || command == "version") std::cout << lblue << version << reset << std::endl;
+}
