@@ -3,7 +3,7 @@
 #include <vector>
 #include "main.hpp"
 
-std::vector<std::string> split(std::string source, char separator)
+std::vector<std::string> ssplit(std::string source, char separator)
 {
 	std::vector<std::string> result;
 	std::string temp;
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 	{
 		std::cout << green << "[" << list[current].name << "]: " << reset;
 		getline(std::cin, str);
-		std::vector<std::string> res = split(str, ' ');
+		std::vector<std::string> res = ssplit(str, ' ');
 		command = res[0];
 		res.erase(res.begin());
 		args = res;

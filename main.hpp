@@ -1,9 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include "machine.hpp"
 
-std::string version = "2.24.3_21";
+#include "machine.hpp"
+#include "extension.hpp"
+
+std::string version = "2.24.4_9";
 std::string green = "\033[32m";
 std::string red = "\033[31m";
 std::string yellow = "\033[33m";
@@ -13,6 +15,7 @@ std::string reset = "\033[0m";
 using byte = unsigned char;
 
 std::vector<Machine> list;
+std::vector<Extension> elist;
 
 int current = 0;
 
@@ -95,9 +98,42 @@ void Init()
 	New("DEFAULT");
 	Choose("DEFAULT");
 
-	// тут должна быть проверка установленных расширений, но... их пока нет
+	std::ifstream exts("extensions");
+
+	if(!exts) std::cout << "No extensions installed" << std::endl;
+	else
+	{
+		std::cout << "Extensions initialization..." << std::endl;
+		std::string temp;
+		std::ifstream ext;
+		int countt = 0;
+		while(std::getline(exts, temp))
+		{
+			ext = std::ifstream(temp);
+			if(!ext) std::cout << red << "Not found \"" << temp << "\" extension"<< reset << std::endl;
+			else
+			{
+				std::vector<std::string> ccode;
+				std::string temp2;
+				while(std::getline(ext, temp2)) ccode.push_back(temp2);
+				std::string nname = ccode[0];
+				std::string ddesc = ccode[1];
+				ccode.erase(ccode.begin(), ccode.begin() + 2);
+				elist.push_back(Extension(nname, ddesc, ccode));
+				countt++;
+			}
+		}
+		std::cout << std::to_string(countt) << " extensions loaded" << std::endl;
+	}
 
 	std::cout << "To see all commands, type \"help\"" << std::endl;
+}
+
+void RunE(std::string name)
+{
+	bool find = false;
+	for(Extension a : elist) { if(a.name == name) { a.Run(); find = true; } }
+	if(!find) std::cout << red << "Not found extension \"" << name << "\"" << reset << std::endl;
 }
 
 void Do(std::string command, std::vector<std::string> args )
@@ -159,11 +195,20 @@ void Do(std::string command, std::vector<std::string> args )
 			byte len = (byte)(std::stoi(args[1]));
 			byte end = start + len;
 			std::cout << "[ ";
-			for(start; start < end; start++) std::cout << std::to_string(list[current].GetFromMemory(start)) << ", ";
+			for(; start < end - 1; start++) std::cout << std::to_string(list[current].GetFromMemory(start)) << ", ";
+			start++; std::cout << std::to_string(list[current].GetFromMemory(start));
 			std::cout << " ]" << std::endl;
 		}
 		else std::cout << red << "Wrong arguments!" << reset << std::endl;
 	}
+
+	else if(command == "elist") for(Extension a : elist) std::cout << a.name << "   " << a.desc << std::endl;
+	else if(command == "erun")
+	{
+		if(args.size() != 1) std::cout << red << "Wrong arguments!" << reset << std::endl;
+		else RunE(args[0]);
+	}
+
 	else if(command == "help")
 	{
 		std::cout << 	"new <value>           Creates new machine\n" <<
@@ -177,7 +222,10 @@ void Do(std::string command, std::vector<std::string> args )
 						"load <value>          Loads file\n" <<
 						"loadr <value>         Loads file and runs it\n\n" <<
 						"print <index>         Prints value\n" <<
-						"print <index> <len>   Prints values" << std::endl;
+						"print <index> <len>   Prints values\n\n" <<
+						"elist                 Shows all extensions\n" <<
+						"erun <value>          Runs extension\n\n" <<
+						"exit                  Exits" << std::endl;
 	}
 	else if(command == "ver" || command == "version") std::cout << lblue << version << reset << std::endl;
 }

@@ -3,8 +3,8 @@ default: build
 
 build: main_linux
 
-main_linux: main.cpp main.hpp
-	clang++ main.cpp -o bin/main
+main_linux:
+	clang++ main.cpp extension.cpp -o bin/main -Ltinyss -ltinyss
 
 # я пока не протестил на винде, поэтому пусть будет закомментировано
 #main_win:
