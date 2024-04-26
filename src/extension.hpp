@@ -1,6 +1,6 @@
 #include <string>
 #include <vector>
-#include "tinyss/tinyss.hpp"
+#include "../tinyss/tinyss.hpp"
 
 struct Extension
 {

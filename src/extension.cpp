@@ -3,7 +3,7 @@
 #include <vector>
 #include <thread>
 
-#include "tinyss/tinyss.hpp"
+#include "../tinyss/tinyss.hpp"
 #include "extension.hpp"
 
 Extension::Extension() {}
