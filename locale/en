@@ -1,0 +1,29 @@
+File doesn't exist
+Machine with that name has already been created
+Machine with that name doesn't exist
+Initialization...
+No extensions installed
+Extensions initialization...
+Not found extension:
+extensions loaded
+To see all command, type
+Wrong arguments!
+Register(0-3) value cannot be changed
+value
+index
+len
+Creates new machine
+Deletes machine
+Shows all machines
+Sets value
+Clears screen
+Clears machine code
+Chooses machine
+Runs machine code
+Loads file
+Loads file and runs it
+Prints value
+Prints values
+Shows all extensions
+Runs extension
+Exits

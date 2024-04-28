@@ -5,6 +5,7 @@ build: main_linux
 
 main_linux:
 	clang++ src/main.cpp src/extension.cpp -o bin/main -Ltinyss -ltinyss
+	cp -r locale bin
 
 # я пока не протестил на винде, поэтому пусть будет закомментировано
 #main_win:
