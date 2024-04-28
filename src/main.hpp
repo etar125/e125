@@ -96,8 +96,11 @@ void Choose(std::string name)
 
 void LangInit()
 {
-	std::cout << "Lang" << std::endl;
-	std::ifstream loc("locale/en");
+	std::string lc = "";
+	std::ifstream floc("locale/cfg");
+	if(!floc) lc = "en";
+	else { while(std::getline(floc, lc)) {} }
+	std::ifstream loc("locale/" + lc);
 	if(!loc) std::cout << u8"Not found default locale!" << std::endl;
 	else
 	{
@@ -113,7 +116,7 @@ void Init()
 	New(u8"DEFAULT");
 	Choose(u8"DEFAULT");
 
-	std::ifstream exts("extensions");
+	std::ifstream exts(u8"extensions");
 
 	if(!exts) std::cout << lcl[4] << std::endl;
 	else
