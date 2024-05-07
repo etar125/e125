@@ -13,11 +13,38 @@ std::string lblue = "\033[94m";
 std::string reset = "\033[0m";
 
 using byte = unsigned char;
+using word = unsigned short;
+
+#define bx (byte)
 
 std::vector<Machine> list;
 std::vector<Extension> elist;
 
 int current = 0;
+
+void tss::gfunc(std::string name)
+{
+    if(name == "getb") // get byte
+        tss::set(tss::stack[1], std::to_string(list[current].GetFromMemory(bx(std::stoi(tss::stack[0])))));
+    else if(name == "setb") // set byte
+		list[current].LoadToMemory(bx(std::stoi(tss::stack[1])), bx(std::stoi(tss::stack[0])));
+	else if(name == "getw") // get word
+	{
+		byte f = list[current].GetFromMemory(bx(std::stoi(tss::stack[0])));
+		byte s = list[current].GetFromMemory(bx(std::stoi(tss::stack[1])));
+		word w = f + (s << 8);
+		tss::set(tss::stack[2], std::to_string(w));
+	}
+	else if(name == "setw") // set word
+	{
+		word w = list[current].GetFromMemory(bx(std::stoi(tss::stack[0])));
+		byte p = list[current].GetFromMemory(bx(std::stoi(tss::stack[1])));
+		byte f = w >> 8;
+		byte s = (w << 8) >> 8;
+		list[current].LoadToMemory(f, p);
+		list[current].LoadToMemory(s, p + 1);
+	}
+}
 
 void LoadCode(Machine pc, std::vector<byte> code, byte appstart)
 {

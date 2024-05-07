@@ -3,6 +3,8 @@
 
 using byte = unsigned char;
 
+/*
+
 enum Opcodes : byte
 {
 	MoveA = 10, // move ADR value
@@ -41,6 +43,8 @@ enum Opcodes : byte
 	End = 1
 };
 
+*/
+
 struct Machine
 {
 	std::string name;
@@ -77,7 +81,11 @@ struct Machine
 			position = Position;
 			for(; position < 255; position++)
 			{
+				/*
+
 				byte opcode = GetFromMemory(position);
+
+				
 
 				if(opcode == Opcodes::End) break;
 
@@ -302,6 +310,8 @@ struct Machine
 					byte to = GetFromMemory(GetFromMemory(position));
 					if(adress != 0) position = adress;
 				}
+
+				*/
 			}
 			position = 0;
 		}
