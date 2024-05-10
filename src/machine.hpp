@@ -1,5 +1,12 @@
+#pragma once
+
 #include <iostream>
 #include <string>
+#include <vector>
+
+#include "../tinyss/tinyss.hpp"
+#include "../tinyss/token.hpp"
+#include "extension.hpp"
 
 using byte = unsigned char;
 
@@ -48,40 +55,48 @@ enum Opcodes : byte
 struct Machine
 {
 	std::string name;
-	byte memory[255];
+	std::vector<byte> memory;
 	byte registers = 0;
 	//const byte StackPointer = 0;
 	//const byte StackStart = 4;
 	//const byte StackSize = 16;
 	byte other = 4;
 	byte position = 0;
+	Extension main;
 
-	Machine() { }
-	Machine(std::string _name) { name = _name; }
+	void Clear() { std::fill(memory.begin(), memory.end(), 0); }
 
-	void LoadToMemory(byte Byte, byte Position)
-	{
-		memory[Position] = Byte;
-	}
+	Machine(Extension ext) { memory.resize(256); Clear(); main = ext; }
+	Machine(Extension ext, std::string _name) { memory.resize(256); Clear(); main = ext; name = _name; }
 
-	byte GetFromMemory(byte Position)
-	{
-		return memory[Position];
-	}
+	
 
-	void Clear()
-	{
-		for(int i = 0; i < 255; i++) memory[i] = 0;
-	}
+	void SetMemSize(std::size_t size) { if(size != 256) { memory.resize(size); Clear(); } }
+
+	void LoadToMemory(byte Byte, byte Position) { memory[Position] = Byte; }
+ 	byte GetFromMemory(byte Position) { return memory[Position]; }
 
 	void Run(byte Position)
 	{
 		if(Position >= other)
 		{
-			position = Position;
-			for(; position < 255; position++)
+			main.ss.set("pos", std::to_string(Position));
+			TSSException te = main.ss.docode(main.code);
+			if(te.index != -1)
 			{
-				/*
+				std::cout << "TSSException: line " << std::to_string(te.index) << " token:[ ";
+				if(te.token.type == tkntp::com) std::cout << "command, ";
+				else if(te.token.type == tkntp::var) std::cout << "variable, ";
+				else if(te.token.type == tkntp::lab) std::cout << "label, ";
+				else if(te.token.type == tkntp::val) std::cout << "value, ";
+				std::cout << "\"" << te.token.val << "\" ]\n" << main.code[te.index] << std::endl;
+			}
+			/* будет переписано, пока оставлю
+
+			position = Position;
+			for(; position < memory.size(); position++)
+			{
+				
 
 				byte opcode = GetFromMemory(position);
 
@@ -310,10 +325,12 @@ struct Machine
 					byte to = GetFromMemory(GetFromMemory(position));
 					if(adress != 0) position = adress;
 				}
-
-				*/
 			}
 			position = 0;
+
+			*/
 		}
+
+		
 	}
 };

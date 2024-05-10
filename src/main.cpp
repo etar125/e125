@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
 		command = res[0];
 		res.erase(res.begin());
 		args = res;
+		//if (args.size() >= 1) std::cout << "command: " << command << " args[0]: \"" << args[0] << "\"\n";
 		if(command == "exit") return 0;
 		else Do(command, args);
 	}

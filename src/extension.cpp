@@ -7,12 +7,13 @@
 #include "extension.hpp"
 
 Extension::Extension() {}
+Extension::Extension(std::string _name) { Extension::name = _name; }
 Extension::Extension(std::string _name, std::string _desc, std::vector<std::string> _code) { Extension::name = _name; Extension::code = _code; Extension::desc = _desc; }
 
-void Extension::Run()
-{
-	TSSException b = Extension::ss.docode(Extension::code);
-}
+// void Extension::Run()
+// {
+// 	TSSException b = Extension::ss.docode(Extension::code);
+// }
 
 void Extension::Clear()
 {
