@@ -84,12 +84,13 @@ struct Machine
 			TSSException te = main.ss.docode(main.code);
 			if(te.index != -1)
 			{
-				std::cout << "TSSException: line " << std::to_string(te.index) << " token:[ ";
+				std::cout << "Extension: " << main.name << std::endl;
+				std::cout << "MachineRun: TSSException: index " << std::to_string(te.index) << " token:[ ";
 				if(te.token.type == tkntp::com) std::cout << "command, ";
 				else if(te.token.type == tkntp::var) std::cout << "variable, ";
 				else if(te.token.type == tkntp::lab) std::cout << "label, ";
 				else if(te.token.type == tkntp::val) std::cout << "value, ";
-				std::cout << "\"" << te.token.val << "\" ]\n" << main.code[te.index] << std::endl;
+				std::cout << "\"" << te.token.val << "\" ]\n" << te.message << std::endl;
 			}
 			/* будет переписано, пока оставлю
 

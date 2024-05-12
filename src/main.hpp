@@ -5,7 +5,7 @@
 #include "machine.hpp"
 #include "extension.hpp"
 
-std::string version = "2.24.5_10";
+std::string version = "2.24.5_12";
 std::string green = "\033[32m";
 std::string red = "\033[31m";
 std::string yellow = "\033[33m";
@@ -103,12 +103,13 @@ void RunE(std::string name)
 			TSSException te = a.ss.docode(a.code);
 			if(te.index != -1)
 			{
-				std::cout << "TSSException: line " << std::to_string(te.index) << " token:[ ";
+				std::cout << "Extension: " << name << std::endl;
+				std::cout << "RunE: TSSException: index " << std::to_string(te.index) << " token:[ ";
 				if(te.token.type == tkntp::com) std::cout << "command, ";
 				else if(te.token.type == tkntp::var) std::cout << "variable, ";
 				else if(te.token.type == tkntp::lab) std::cout << "label, ";
 				else if(te.token.type == tkntp::val) std::cout << "value, ";
-				std::cout << "\"" << te.token.val << "\" ]\n" << a.code[te.index] << std::endl;
+				std::cout << "\"" << te.token.val << "\" ]\n" << te.message << std::endl;
 			}
 			find = true;
 		}
@@ -187,7 +188,7 @@ void Init()
 		std::cout << std::to_string(countt) << " extensions loaded" << std::endl;
 	}
 
-	New("DEFAULT", "e125.test");
+	New("DEFAULT", "e125.machine8");
 	Choose("DEFAULT");
 
 	std::cout << "To see all commands, type \"help\"" << std::endl;
