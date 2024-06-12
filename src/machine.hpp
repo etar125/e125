@@ -52,31 +52,73 @@ enum Opcodes : byte
 
 */
 
+std::string tripstr(std::string str)
+{
+
+	int i = 0;
+	while(str[i] == ' ' || str[i] == '\t') i++;
+	return str.substr(i);
+}
+
 struct Machine
 {
 	std::string name;
 	std::vector<byte> memory;
-	byte registers = 0;
+	short registers = 0;
 	//const byte StackPointer = 0;
 	//const byte StackStart = 4;
 	//const byte StackSize = 16;
-	byte other = 4;
-	byte position = 0;
+	short other = 4;
+	short position = 0;
 	Extension main;
 
 	void Clear() { std::fill(memory.begin(), memory.end(), 0); }
 
-	Machine(Extension ext) { memory.resize(256); Clear(); main = ext; }
-	Machine(Extension ext, std::string _name) { memory.resize(256); Clear(); main = ext; name = _name; }
+	Machine(Extension ext) { memory.resize(256); Clear(); main = ext; Init(); }
+	Machine(Extension ext, std::string _name) { memory.resize(256); Clear(); main = ext; name = _name; Init(); }
 
-	
+	void Init()
+	{
+		std::vector<std::string> init;
+		init.push_back("call init");
+		init.push_back("exit");
+		bool f = false;
+		for(std::string s : main.code)
+		{
+			if(tripstr(s) == ":init" && !f)
+			{
+				f = true;
+				init.push_back(s);
+			}
+			else if(tripstr(s) == "ret" && f)
+			{
+				f = false;
+				init.push_back(s);
+			}
+			else if(f)
+			{
+				init.push_back(s);
+			}
+		}
+		TSSException te = main.ss.docode(init);
+		if(te.index != -1)
+		{
+			std::cout << "Extension: " << main.name << std::endl;
+			std::cout << "MachineInit: TSSException: index " << std::to_string(te.index) << " token:[ ";
+			if(te.token.type == tkntp::com) std::cout << "command, ";
+			else if(te.token.type == tkntp::var) std::cout << "variable, ";
+			else if(te.token.type == tkntp::lab) std::cout << "label, ";
+			else if(te.token.type == tkntp::val) std::cout << "value, ";
+			std::cout << "\"" << te.token.val << "\" ]\n" << te.message << std::endl;
+		}
+	}
 
 	void SetMemSize(std::size_t size) { if(size != 256) { memory.resize(size); Clear(); } }
 
-	void LoadToMemory(byte Byte, byte Position) { memory[Position] = Byte; }
- 	byte GetFromMemory(byte Position) { return memory[Position]; }
+	void LoadToMemory(byte Byte, short Position) { memory[Position] = Byte; }
+ 	byte GetFromMemory(short Position) { return memory[Position]; }
 
-	void Run(byte Position)
+	void Run(short Position)
 	{
 		if(Position >= other)
 		{

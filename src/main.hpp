@@ -5,7 +5,7 @@
 #include "machine.hpp"
 #include "extension.hpp"
 
-std::string version = "2.24.5_12";
+std::string version = "2.24.6_12";
 std::string green = "\033[32m";
 std::string red = "\033[31m";
 std::string yellow = "\033[33m";
@@ -16,6 +16,7 @@ using byte = unsigned char;
 using word = unsigned short;
 
 #define bx (byte)
+#define sx (byte)
 
 std::vector<Machine> list;
 std::vector<Extension> elist;
@@ -25,20 +26,20 @@ int current = 0;
 void tss::gfunc(std::string name)
 {
 	if(name == "getb") // get byte: $position name
-        tss::set(tss::stack[1], std::to_string(list[current].GetFromMemory(bx(std::stoi(tss::stack[0])))));
+        tss::set(tss::stack[1], std::to_string(list[current].GetFromMemory(sx(std::stoi(tss::stack[0])))));
     else if(name == "setb") // set byte: $position $value
-		list[current].LoadToMemory(bx(std::stoi(tss::stack[1])), bx(std::stoi(tss::stack[0])));
+		list[current].LoadToMemory(bx(std::stoi(tss::stack[1])), sx(std::stoi(tss::stack[0])));
 	else if(name == "getw") // get word: like getb
 	{
-		byte f = list[current].GetFromMemory(bx(std::stoi(tss::stack[0])));
-		byte s = list[current].GetFromMemory(bx(std::stoi(tss::stack[1])));
+		byte f = list[current].GetFromMemory(sx(std::stoi(tss::stack[0])));
+		byte s = list[current].GetFromMemory(sx(std::stoi(tss::stack[0]) + 1));
 		word w = f + (s << 8);
 		tss::set(tss::stack[2], std::to_string(w));
 	}
 	else if(name == "setw") // set word: like setb
 	{
-		word w = list[current].GetFromMemory(bx(std::stoi(tss::stack[0])));
-		byte p = list[current].GetFromMemory(bx(std::stoi(tss::stack[1])));
+		word w = sx(std::stoi(tss::stack[1]));
+		word p = sx(std::stoi(tss::stack[0]));
 		byte f = w >> 8;
 		byte s = (w << 8) >> 8;
 		list[current].LoadToMemory(f, p);
@@ -46,11 +47,40 @@ void tss::gfunc(std::string name)
 	}
 	else if(name == "resmem") // resize memory
 		list[current].SetMemSize(std::stoi(tss::stack[0]));
+	else if(name == "putstr")
+	{
+		std::string str = "";
+		bool spec = false;
+		for(char d : tss::stack[0])
+		{
+			if(d == '\\' && !spec) spec = true;
+			else if (d == '\\' && spec) spec = false;
+			else if(spec)
+			{
+				if(d == 'n') str += '\n';
+				else if(d == 't') str += '\t';
+				else if(d == 'a') str += '\033';
+				spec = false;
+			}
+			else str += d;
+		}
+		std::cout << str;
+	}
+	else if(name == "putch")
+	{
+		std::cout << std::stoi(tss::stack[0]);
+	}
+	else if(name == "getline")
+	{
+		std::string str;
+		getline(std::cin, str);
+		tss::set(tss::stack[0], str);
+	}
 }
 
-void LoadCode(Machine pc, std::vector<byte> code, byte appstart)
+void LoadCode(Machine pc, std::vector<byte> code, short appstart)
 {
-	byte count = 0;
+	short count = 0;
 	for(int i = 1; i < code.size(); i++)
 	{
 		pc.LoadToMemory(code[i], appstart + count);
@@ -58,17 +88,17 @@ void LoadCode(Machine pc, std::vector<byte> code, byte appstart)
 	}
 }
 
-byte LoadFile(std::string s)
+word LoadFile(std::string s)
 {
 	std::ifstream file(s);
-	if(!file) std::cout << red << "File does not exist" << reset << std::endl;
+	if(!file) std::cout << red << "Not found file \"" << s << "\"" << reset << std::endl;
 	else
 	{
-		byte appstart = 0;
+		short appstart = 0;
 		std::vector<byte> cod;
 		std::string temp;
 		while(std::getline(file, temp)) { for(byte n : temp) { cod.push_back(n); } }
-		appstart = cod[0];
+		appstart = cod[0] + (cod[1] << 8);
 		cod.erase(cod.begin());
 		LoadCode(list[current], cod, appstart);
 		return appstart;
@@ -194,6 +224,39 @@ void Init()
 	std::cout << "To see all commands, type \"help\"" << std::endl;
 }
 
+/* void savem(std::string name)
+{
+	int a = findm(name);
+	if(a != -1)
+	{
+		std::ofstream file(name + ".e125machine");
+		file << name + "\n";
+		file << list[a].main.name + "\n";
+		std::string result;
+		for(byte s : list[a].memory) result += s;
+		file << result;
+		file.close();
+	}
+	else std::cout << red << "Machine with that name does not exist" << reset << std::endl;
+}
+
+void loadm(std::string path)
+{
+	std::ifstream file(path);
+	if(!file) std::cout << red << "Not found file \"" << path << "\"" << reset << std::endl;
+	else
+	{
+		std::vector<std::string> result;
+		std::string temp;
+		while(std::getline(file, temp)) result.push_back(temp);
+		int ind = findm(result[0]);
+		if(ind == -1) New(result[0], result[1]);
+		std::vector<byte> cod;
+		for(byte n : result[2]) cod.push_back(n);
+		LoadCode(list[findm(result[0])], cod, 0);
+	}
+} */
+
 void Do(std::string command, std::vector<std::string> args )
 {
 	if(command == "new")
@@ -267,9 +330,20 @@ void Do(std::string command, std::vector<std::string> args )
 		else RunE(args[0]);
 	}
 
+	/* else if(command == "savem")
+	{
+		if(args.size() != 1) std::cout << red << "Wrong arguments!" << reset << std::endl;
+		savem(args[0]);
+	}
+	else if(command == "loadm")
+	{
+		if(args.size() != 1) std::cout << red << "Wrong arguments!" << reset << std::endl;
+		loadm(args[0]);
+	} */
+
 	else if(command == "help")
 	{
-		std::cout << 			"new <value> <ext>     Creates new machine with extension\n" <<
+		std::cout << 	"new <value> <ext>     Creates new machine with extension\n" <<
 						"del <value>           Deletes machine\n" <<
 						"list                  Shows all machines\n" <<
 						"set <index> <value>   Sets value\n" <<
@@ -283,6 +357,8 @@ void Do(std::string command, std::vector<std::string> args )
 						"print <index> <len>   Prints values\n\n" <<
 						"elist                 Shows all extensions\n" <<
 						"erun <value>          Runs extension\n\n" <<
+						// "savem <value>         Saves machine\n" <<
+						// "loadm <value>         Loads machine\n\n" <<
 						"exit                  Exits" << std::endl;
 	}
 	else if(command == "ver" || command == "version") std::cout << lblue << version << reset << std::endl;

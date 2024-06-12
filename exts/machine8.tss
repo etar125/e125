@@ -1,0 +1,118 @@
+e125.machine8
+Default simple 8-bit machine
+; ver. 0.0
+; DON'T EDIT THIS FILE
+
+:init
+	;gpushb 125\n
+    ;gcall putstr
+ret
+
+:loop
+    call LGET
+
+    call INITA
+
+    if INSTRUCTION e 10
+    ; MoveA ADR value
+        call LGETP
+        define arg0 $INSTRUCTION
+        call LGETP
+        define arg1 $INSTRUCTION
+
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+    elif INSTRUCTION e 11
+    ; MoveB ADR adr
+        call LGETP
+        define arg0 $INSTRUCTION
+        call LGETP
+        define arg1 $INSTRUCTION
+        gpushb $arg1
+        gpushb arg1
+        gcall getb
+
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    elif INSTRUCTION e 20
+    ; JumpA value
+        call LGETP
+        define arg0 $INSTRUCTION
+        op arg0 - 1
+
+        define pos $arg0
+    
+    elif INSTRUCTION e 21
+    ; JumpB adr
+        call LGETP
+        define arg0 $INSTRUCTION
+        gpushb $arg0
+        gpushb arg0
+        gcall getb
+        op arg0 - 1
+
+        define pos $arg0
+    
+    elif INSTRUCTION e 22
+    ; JumpZeroA value
+        call LGETP
+        define arg0 $INSTRUCTION
+        gpushb $arg0
+        gpushb arg0
+        gcall getb
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        op arg1 - 1
+
+        if arg0 e 0
+            define pos $arg1
+            end
+    
+    elif INSTRUCTION e 23
+    ; JumpZeroB adr
+        call LGETP
+        define arg0 $INSTRUCTION
+        gpushb $arg0
+        gpushb arg0
+        gcall getb
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        op arg1 - 1
+
+        if arg0 e 0
+            define pos $arg1
+            end
+
+    elif INSTRUCTION e 1
+        exit
+    end
+
+    op pos + 1
+
+goto loop
+
+:INITA
+; init args
+    define arg0 0
+    define arg1 0
+    define arg2 0
+ret
+
+:LGETP
+; loop get plus
+    op pos + 1
+    call LGET
+ret
+
+:LGET
+; loop get
+    gpushb $pos
+    gpushb INSTRUCTION
+    gcall getb
+ret
+
