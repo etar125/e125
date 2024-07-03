@@ -5,6 +5,8 @@
 #include "machine.hpp"
 #include "extension.hpp"
 
+// надо string -> wstring char -> wchar_t ifstream/ofstream -> wifstream/wofstream и т.п. для локализации
+
 std::string version = "2.24.6_12";
 std::string green = "\033[32m";
 std::string red = "\033[31m";
@@ -16,7 +18,7 @@ using byte = unsigned char;
 using word = unsigned short;
 
 #define bx (byte)
-#define sx (byte)
+#define sx (byte) // ??? мб short? судя по коду ниже, да
 
 std::vector<Machine> list;
 std::vector<Extension> elist;
@@ -114,7 +116,7 @@ void LoadRun(std::string s)
 void Logo()
 {
 	std::cout << "███████╗  ███╗  ██████╗ ███████╗\n██╔════╝ ████║  ╚════██╗██╔════╝\n█████╗  ██╔██║    ███╔═╝██████╗ \n██╔══╝  ╚═╝██║  ██╔══╝  ╚════██╗\n███████╗███████╗███████╗██████╔╝\n╚══════╝╚══════╝╚══════╝╚═════╝ " << std::endl;
-}
+} // слишком сложное лого, надо что-то попроще
 
 Extension GetE(std::string name)
 {
