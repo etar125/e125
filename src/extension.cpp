@@ -6,17 +6,17 @@
 #include "../tinyss/tinyss.hpp"
 #include "extension.hpp"
 
-Extension::Extension() {}
-Extension::Extension(std::string _name) { Extension::name = _name; }
-Extension::Extension(std::string _name, std::string _desc, std::vector<std::string> _code) { Extension::name = _name; Extension::code = _code; Extension::desc = _desc; }
+ext::ext() {}
+ext::ext(std::string _name) { ext::name = _name; }
+ext::ext(std::string _name, std::string _desc, std::vector<std::string> _code) { ext::name = _name; ext::code = _code; ext::desc = _desc; }
 
-// void Extension::Run()
+// void ext::Run()
 // {
-// 	TSSException b = Extension::ss.docode(Extension::code);
+// 	TSSException b = ext::ss.docode(ext::code);
 // }
 
-void Extension::Clear()
+void ext::clear()
 {
-    Extension::ss.vars.clear();
-    Extension::ss.stack.clear();
+    ext::ss.vars.clear();
+    ext::ss.stack.clear();
 }

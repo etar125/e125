@@ -4,20 +4,20 @@
 #include <vector>
 #include "../tinyss/tinyss.hpp"
 
-struct Extension
+struct ext
 {
     std::string name;
     std::string desc;
     std::vector<std::string> code;
     tss ss;
 
-    Extension();
+    ext();
 
-    Extension(std::string _name);
+    ext(std::string _name);
 
-    Extension(std::string _name, std::string _desc, std::vector<std::string> _code);
+    ext(std::string _name, std::string _desc, std::vector<std::string> _code);
 
     // void Run();
 
-    void Clear();
+    void clear();
 };
