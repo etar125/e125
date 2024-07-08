@@ -1,0 +1,13 @@
+test
+test
+:init
+ret
+:test
+gpushb 25
+gpushb 25
+gpushb test
+gcall make
+gpushb $test
+gcall putstr 
+ret
+exit
