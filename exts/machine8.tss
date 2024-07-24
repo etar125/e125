@@ -2,10 +2,11 @@ e125.machine8
 Default simple 8-bit machine
 ; ver. 0.0
 ; DON'T EDIT THIS FILE
+goto loop
 
 :init
-	;gpushb 125\n
-    ;gcall putstr
+	gpushb 256
+    gcall resmem
 ret
 
 :loop
@@ -36,6 +37,8 @@ ret
         gpushb $arg0
         gpushb $arg1
         gcall setb
+
+    ; --------------------------------
 
     elif INSTRUCTION e 20
     ; JumpA value
@@ -71,7 +74,7 @@ ret
         if arg0 e 0
             define pos $arg1
             end
-    
+
     elif INSTRUCTION e 23
     ; JumpZeroB adr
         call LGETP
@@ -87,6 +90,308 @@ ret
         if arg0 e 0
             define pos $arg1
             end
+
+    elif INSTRUCTION e 24
+    ; JumpNotZeroA value
+        call LGETP
+        define arg0 $INSTRUCTION
+        gpushb $arg0
+        gpushb arg0
+        gcall getb
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        op arg1 - 1
+
+        if arg0 ne 0
+            define pos $arg1
+            end
+
+    elif INSTRUCTION e 25
+    ; JumpNotZeroB adr
+        call LGETP
+        define arg0 $INSTRUCTION
+        gpushb $arg0
+        gpushb arg0
+        gcall getb
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        op arg1 - 1
+
+        if arg0 ne 0
+            define pos $arg1
+            end
+
+    ; ----------------------------------
+
+    elif INSTRUCTION e 30
+    ; AddA adr adr
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        gpushb $arg1
+        gpushb arg1
+        gcall getb
+
+        call LGETP
+        define arg2 $INSTRUCTION
+        gpushb $arg2
+        gpushb arg2
+        gcall getb
+
+        op arg1 + $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    elif INSTRUCTION e 31
+    ; AddB adr val
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        gpushb $arg1
+        gpushb arg1
+        gcall getb
+
+        call LGETP
+        define arg2 $INSTRUCTION
+
+        op arg1 + $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    elif INSTRUCTION e 32
+    ; AddC val val
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        call LGETP
+        define arg2 $INSTRUCTION
+
+        op arg1 + $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    ; ------------------------------
+
+    elif INSTRUCTION e 40
+    ; SubA adr adr
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        gpushb $arg1
+        gpushb arg1
+        gcall getb
+
+        call LGETP
+        define arg2 $INSTRUCTION
+        gpushb $arg2
+        gpushb arg2
+        gcall getb
+
+        op arg1 - $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    elif INSTRUCTION e 41
+    ; SubB adr val
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        gpushb $arg1
+        gpushb arg1
+        gcall getb
+
+        call LGETP
+        define arg2 $INSTRUCTION
+
+        op arg1 - $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    elif INSTRUCTION e 42
+    ; SubC val adr
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+
+        call LGETP
+        define arg2 $INSTRUCTION
+        gpushb $arg2
+        gpushb arg2
+        gcall getb
+
+        op arg1 - $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    elif INSTRUCTION e 43
+    ; SubD val val
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        call LGETP
+        define arg2 $INSTRUCTION
+
+        op arg1 - $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    ; -------------------------------------
+
+    elif INSTRUCTION e 50
+    ; MulA adr adr
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        gpushb $arg1
+        gpushb arg1
+        gcall getb
+
+        call LGETP
+        define arg2 $INSTRUCTION
+        gpushb $arg2
+        gpushb arg2
+        gcall getb
+
+        op arg1 * $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    elif INSTRUCTION e 51
+    ; MulB adr val
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        gpushb $arg1
+        gpushb arg1
+        gcall getb
+
+        call LGETP
+        define arg2 $INSTRUCTION
+
+        op arg1 * $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    elif INSTRUCTION e 52
+    ; MulC val val
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        call LGETP
+        define arg2 $INSTRUCTION
+
+        op arg1 * $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    ; ---------------------------------
+
+    elif INSTRUCTION e 60
+    ; DivA adr adr
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        gpushb $arg1
+        gpushb arg1
+        gcall getb
+
+        call LGETP
+        define arg2 $INSTRUCTION
+        gpushb $arg2
+        gpushb arg2
+        gcall getb
+
+        op arg1 / $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    elif INSTRUCTION e 61
+    ; DivB adr val
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        gpushb $arg1
+        gpushb arg1
+        gcall getb
+
+        call LGETP
+        define arg2 $INSTRUCTION
+
+        op arg1 / $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    elif INSTRUCTION e 62
+    ; DivC val adr
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+
+        call LGETP
+        define arg2 $INSTRUCTION
+        gpushb $arg2
+        gpushb arg2
+        gcall getb
+
+        op arg1 / $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
+
+    elif INSTRUCTION e 63
+    ; DivD val val
+        call LGETP
+        define arg0 $INSTRUCTION
+
+        call LGETP
+        define arg1 $INSTRUCTION
+        call LGETP
+        define arg2 $INSTRUCTION
+
+        op arg1 / $arg2
+        gpushb $arg0
+        gpushb $arg1
+        gcall setb
 
     elif INSTRUCTION e 1
         exit

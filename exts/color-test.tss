@@ -1,0 +1,45 @@
+color-test
+test
+;
+call test
+exit
+
+:init
+    ;
+ret
+
+:test
+    gpushb \a[30m██
+    gcall putstr
+    gpushb \a[31m██
+    gcall putstr
+    gpushb \a[32m██
+    gcall putstr
+    gpushb \a[33m██
+    gcall putstr
+    gpushb \a[34m██
+    gcall putstr
+    gpushb \a[35m██
+    gcall putstr
+    gpushb \a[36m██
+    gcall putstr
+    gpushb \a[37m██\n
+    gcall putstr
+
+    gpushb \a[90m██
+    gcall putstr
+    gpushb \a[91m██
+    gcall putstr
+    gpushb \a[92m██
+    gcall putstr
+    gpushb \a[93m██
+    gcall putstr
+    gpushb \a[94m██
+    gcall putstr
+    gpushb \a[95m██
+    gcall putstr
+    gpushb \a[96m██
+    gcall putstr
+    gpushb \a[97m██\n
+    gcall putstr
+ret
