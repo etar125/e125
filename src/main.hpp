@@ -164,8 +164,10 @@ void loop() {
                 cout << "\"" << te.token.val << "\" ]\n" << te.message << RESET << endl;
             }
             ecur.code.erase(ecur.code.begin(), ecur.code.begin() + 2);
+        } else if(a[0]== "cls") { cout << "\033[H\033[J"; }
+        else if(a[0] == "help") {
+            cout << "list\nch name\ncl\nset pos val\nprint pos len\nres size\nrun pos\ncur\ncall name\ncls\nexit" << endl;
         }
-        //else if(a[0]== "cls") { cout << "\033[H\033[J"; }
     }
 }
 
@@ -208,7 +210,8 @@ void tss::gfunc(string name) {
         string str;
         getline(cin, str);
         tss::set(tss::stack[0], str);
-    } else if(name == "make") { // n bytes -> number: $num1 $num2 var
+    } /* переделаю
+    else if(name == "make") { // n bytes -> number: $num1 $num2 var
         int size = tss::stack.size();
         if(size == 3) {
             union {
@@ -221,97 +224,5 @@ void tss::gfunc(string name) {
         }
     } else if(name == "split") {
 
-    }
+    } */
 }
-
-/* Будет переписано
- * mem.resize(size);
-void tss::gfunc(std::string name)
-{
-    if(name == "setb") // set byte: $position $value
-        list[current].LoadToMemory(bx(std::stoi(tss::stack[1])), sx(std::stoi(tss::stack[0])));
-    else if(name == "getw") // get word: like getb
-    {
-        byte f = list[current].GetFromMemory(sx(std::stoi(tss::stack[0])));
-        byte s = list[current].GetFromMemory(sx(std::stoi(tss::stack[0]) + 1));
-        word w = f + (s << 8);
-        tss::set(tss::stack[2], std::to_string(w));
-    }
-    else if(name == "setw") // set word: like setb
-    {
-        word w = sx(std::stoi(tss::stack[1]));
-        word p = sx(std::stoi(tss::stack[0]));
-        byte f = w >> 8;
-        byte s = (w << 8) >> 8;
-        list[current].LoadToMemory(f, p);
-        list[current].LoadToMemory(s, p + 1);
-    }
-    else if(name == "resmem") // resize memory
-        list[current].SetMemSize(std::stoi(tss::stack[0]));
-    else if(name == "putstr")
-    {
-        std::string str = "";
-        bool spec = false;
-        for(char d : tss::stack[0])
-        {
-            if(d == '\\' && !spec) spec = true;
-            else if (d == '\\' && spec) spec = false;
-            else if(spec)
-            {
-                if(d == 'n') str += '\n';
-                else if(d == 't') str += '\t';
-                else if(d == 'a') str += '\033';
-                spec = false;
-            }
-            else str += d;
-        }
-        std::cout << str;
-    }
-    else if(name == "putch")
-    {
-        std::cout << std::stoi(tss::stack[0]);
-    }
-    else if(name == "getline")
-    {
-        std::string str;
-        getline(std::cin, str);
-        tss::set(tss::stack[0], str);
-    }
-} */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
