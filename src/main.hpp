@@ -8,17 +8,19 @@
 #include "str.hpp"
 #define _clearmem fill(mem.begin(), mem.end(), 0);
 #define ecur elist[current]
+#define uchar unsigned char
+#define ushort unsigned short
 
 using namespace std;
 namespace fs = filesystem;
 
-string ver = "e125 v3.24.7_8a";
+string ver = "e125 v3.24.7_25b";
 string lang[10]={"MISSING"};
 
 vector<ext> elist;
 short current = 0;
 int mems = 256;
-vector<char> mem;
+vector<uchar> mem;
 
 void einit();
 int init() {
@@ -33,7 +35,7 @@ int init() {
 
     lcl = ifstream(temp, ios::binary);
     if(!lcl) return 1;
-    char c = 0;
+    uchar c = 0;
     while(getline(lcl, temp)) {
         lang[c]=temp;
         ++c;
@@ -55,8 +57,8 @@ void einit() {
     string name = "";
     string desc = "";
     vector<string> code;
-    char a = 0;
-    char c = 0;
+    uchar a = 0;
+    uchar c = 0;
     for (const auto& entry : fs::directory_iterator(path)) {
         x = ifstream(entry.path());
         while(getline(x, temp)) {
@@ -78,6 +80,14 @@ void einit() {
     }
     cout << GREEN << lang[3] << " " << to_string(c) << RESET << endl;
 }
+/*
+void savem(string name) {
+    ofstream file(name);
+    file << to_string(mems) << "\n";
+    for(uchar a : mem) {
+
+    }
+} */
 
 void loop() {
     string str;
@@ -93,7 +103,7 @@ void loop() {
         }
         else if(a[0] == "ch") {
             bool f = false;
-            for(short i = 0; i < elist.size(); i++) {
+            for(ushort i = 0; i < elist.size(); i++) {
                 if(elist[i].name == a[1]) {
                     current = i;
                     f = true;
@@ -124,8 +134,8 @@ void loop() {
             int pos = stoi(a[1]);
             int len = stoi(a[2]);
             if(pos + len <= mems) {
-                for(int i = 0; i < len - 1; i++) cout << to_string((short)(mem[pos + i])) << " ";
-                cout << to_string((short)(mem[pos])) << endl;
+                for(int i = 0; i < len - 1; i++) cout << to_string((ushort)(mem[pos + i])) << " ";
+                cout << to_string((ushort)(mem[pos])) << endl;
             } else cout << RED << lang[5] << RESET << endl;
         } else if(a[0] == "res") {
             int size = stoi(a[1]);
@@ -164,9 +174,10 @@ void loop() {
                 cout << "\"" << te.token.val << "\" ]\n" << te.message << RESET << endl;
             }
             ecur.code.erase(ecur.code.begin(), ecur.code.begin() + 2);
-        } else if(a[0]== "cls") { cout << "\033[H\033[J"; }
+        } else if(a[0] == "cls") { cout << "\033[H\033[J"; }
+        else if (a[0] == "ver") { cout << MAGENTA << ver << RESET << endl; }
         else if(a[0] == "help") {
-            cout << "list\nch name\ncl\nset pos val\nprint pos len\nres size\nrun pos\ncur\ncall name\ncls\nexit" << endl;
+            cout << "list\nch name\ncl\nset pos val\nprint pos len\nres size\nrun pos\ncur\ncall name\ncls\nver\nexit" << endl;
         }
     }
 }
