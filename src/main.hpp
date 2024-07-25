@@ -45,6 +45,7 @@ int init() {
 
     einit();
     mem.resize(mems);
+    _clearmem;
     return 0;
 }
 
@@ -80,14 +81,17 @@ void einit() {
     }
     cout << GREEN << lang[3] << " " << to_string(c) << RESET << endl;
 }
-/*
 void savem(string name) {
     ofstream file(name);
-    file << to_string(mems) << "\n";
-    for(uchar a : mem) {
-
-    }
-} */
+    for(uchar a : mem) { file << a; }
+    file.close();
+} void loadm(string name) {
+    ifstream file(name);
+    string temp;
+    getline(file, temp);
+    mem.clear();
+    for(uchar a : temp) mem.push_back(a);
+}
 
 void loop() {
     string str;
@@ -128,7 +132,7 @@ void loop() {
         else if(a[0] == "set") {
             int pos = stoi(a[1]);
             int val = stoi(a[2]);
-            if(pos < mems) mem[pos] = (char)val;
+            if(pos < mems) mem[pos] = (uchar)val;
             else cout << RED << lang[5] << RESET << endl;
         } else if(a[0] == "print") {
             int pos = stoi(a[1]);
@@ -174,10 +178,12 @@ void loop() {
                 cout << "\"" << te.token.val << "\" ]\n" << te.message << RESET << endl;
             }
             ecur.code.erase(ecur.code.begin(), ecur.code.begin() + 2);
-        } else if(a[0] == "cls") { cout << "\033[H\033[J"; }
+        } else if(a[0] == "cls" || a[0] == "clear") { cout << "\033[H\033[J"; }
         else if (a[0] == "ver") { cout << MAGENTA << ver << RESET << endl; }
+        else if (a[0] == "save") { savem(a[1]); }
+        else if (a[0] == "load") { loadm(a[1]); }
         else if(a[0] == "help") {
-            cout << "list\nch name\ncl\nset pos val\nprint pos len\nres size\nrun pos\ncur\ncall name\ncls\nver\nexit" << endl;
+            cout << "list\nch name\ncl\nset pos val\nprint pos len\nres size\nrun pos\ncur\ncall name\ncls\nclear\nver\nsave filename\nload filename\nexit" << endl;
         }
     }
 }
