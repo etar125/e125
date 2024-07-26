@@ -4,7 +4,7 @@ default: build
 build: main_linux misc_linux
 
 main_linux:
-	g++ src/main.cpp src/extension.cpp -o bin/main -Ltinyss -ltinyss
+	g++ src/main.cpp -o bin/main -Ltinyss -ltinyss
 
 misc_linux:
 	cp -r exts bin

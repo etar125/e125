@@ -21,3 +21,10 @@ vector<string> strsp(string s, char w) {
     res.push_back(temp);
     return res;
 }
+
+string RED = "\033[91m";
+string GREEN = "\033[92m";
+string YELLOW = "\033[93m";
+string BLUE = "\033[94m";
+string MAGENTA = "\033[95m";
+string RESET = "\033[0m";
