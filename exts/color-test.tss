@@ -1,6 +1,6 @@
 color-test
 test
-;
+
 call test
 exit
 
@@ -9,6 +9,9 @@ exit
 ret
 
 :test
+    ;gpushb \a[0m3031323334353637\n
+    ;gcall putstr
+
     gpushb \a[30m██
     gcall putstr
     gpushb \a[31m██
@@ -25,6 +28,9 @@ ret
     gcall putstr
     gpushb \a[37m██\n
     gcall putstr
+
+    ;gpushb \a[0m9091929394959697\n
+    ;gcall putstr
 
     gpushb \a[90m██
     gcall putstr

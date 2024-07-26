@@ -13,7 +13,7 @@
 using namespace std;
 namespace fs = filesystem;
 
-string ver = "e125 v3.24.7_25b";
+string ver = "e125 v3.24.7_26b";
 string lang[10]={"MISSING"};
 
 vector<ext> elist;
