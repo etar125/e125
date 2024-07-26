@@ -4,7 +4,6 @@
 #include <vector>
 #include <filesystem>
 #include "extension.hpp"
-#include "color.hpp"
 #include "str.hpp"
 #define _clearmem fill(mem.begin(), mem.end(), 0);
 #define ecur elist[current]
@@ -82,6 +81,7 @@ void einit() {
     cout << GREEN << lang[3] << " " << to_string(c) << RESET << endl;
 }
 void savem(string name) {
+    if(fs::exists(name)) remove(name.c_str());
     ofstream file(name);
     for(uchar a : mem) { file << a; }
     file.close();
@@ -227,7 +227,9 @@ void tss::gfunc(string name) {
         string str;
         getline(cin, str);
         tss::set(tss::stack[0], str);
-    } /* переделаю
+    } else if(name == "save") { savem(tss::stack[0]); }
+    else if(name == "load") { loadm(tss::stack[0]); }
+    /* переделаю
     else if(name == "make") { // n bytes -> number: $num1 $num2 var
         int size = tss::stack.size();
         if(size == 3) {
