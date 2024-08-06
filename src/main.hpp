@@ -9,12 +9,36 @@
 #define ecur elist[current]
 #define uchar unsigned char
 #define ushort unsigned short
+#define uint unsigned int
 
 using namespace std;
 namespace fs = filesystem;
 
-string ver = "e125 v3.24.7_26b";
+string ver = "e125 v3.24.8_24a";
 string lang[10]={"MISSING"};
+bool debug = false;
+bool test = false;
+
+struct vmem {
+    vector<uchar> mem;
+
+    void resize(uint size) {
+        mem.resize(size / 8);
+    } void clear() { fill(mem.begin(), mem.end(), 0); }
+
+    void set(uint pos, bool val) {
+        if(pos / 8 < mem.size()) mem[pos / 8] |= (val << pos - pos / 8);
+        else cout << RED << lang[6] << RESET << endl;
+    } bool get(uint pos) {
+        if(pos / 8 < mem.size()) return (bool((1 << pos - pos / 8)  &  val));
+        else cout << RED << lang[6] << RESET << endl;
+        return NULL;
+    }
+
+    vmem() { resize(256); }
+    vmem(uint size) { resize(size); }
+
+};
 
 vector<ext> elist;
 short current = 0;
@@ -41,6 +65,16 @@ int init() {
     }
 
     cout << GREEN << lang[0] << RESET << endl;
+
+    if(test) {
+        vmem a;
+        a.set(0, true);
+        a.set(16, true);
+        a.set(17, false);
+        a.set(256, true);
+        cout << a.get(0) << a.get(16) << a.get(17) << a.get(256) << endl;
+        return 2;
+    }
 
     einit();
     mem.resize(mems);
