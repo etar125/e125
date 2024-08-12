@@ -14,7 +14,7 @@
 using namespace std;
 namespace fs = filesystem;
 
-string ver = "e125 v3.24.8_24a";
+string ver = "e125 v3.24.8_24b";
 string lang[10]={"MISSING"};
 bool debug = false;
 bool test = false;
@@ -27,17 +27,34 @@ struct vmem {
     } void clear() { fill(mem.begin(), mem.end(), 0); }
 
     void set(uint pos, bool val) {
-        if(pos / 8 < mem.size()) mem[pos / 8] |= (val << pos - pos / 8);
+        if(pos / 8 < mem.size()) {
+            if(val) mem[pos / 8] |= val << (pos % 8);
+            else mem[pos / 8] &= ~(val << (pos % 8));
+        }
         else cout << RED << lang[6] << RESET << endl;
     } bool get(uint pos) {
-        if(pos / 8 < mem.size()) return (bool((1 << pos - pos / 8)  &  val));
+        if(pos / 8 < mem.size()) return (bool((1 << (pos % 8)) & mem[pos / 8]));
         else cout << RED << lang[6] << RESET << endl;
-        return NULL;
+        return false;
+    } vector<bool> get_range(uint pos, uint range) {
+        if((pos + range) / 8 < mem.size()) {
+            vector<bool> r;
+            while(range != 0) {
+                r.push_back(get(pos));
+                ++pos;--range;
+            } return r;
+        } else cout << RED << lang[6] << RESET << endl;
+        return {};
+    } void set_range(uint pos, vector<bool> range) {
+        if((pos + range.size()) / 8 < mem.size()) {
+            for(bool a : range) {
+                set(pos, a); ++pos;
+            }
+        } else cout << RED << lang[6] << RESET << endl;
     }
 
     vmem() { resize(256); }
     vmem(uint size) { resize(size); }
-
 };
 
 vector<ext> elist;
@@ -47,8 +64,10 @@ vector<uchar> mem;
 
 void einit();
 int init() {
-    cout << MAGENTA << ver << RESET << endl;
-    cout << YELLOW << "..." << RESET << endl;
+    cout << MAGENTA << ver;
+    if(test) cout << " TEST";
+    if(debug) cout << " DEBUG";
+    cout << RESET << endl << YELLOW << "..." << RESET << endl;
 
     ifstream lcl("lang/cfg");
     string temp = "";
@@ -70,9 +89,15 @@ int init() {
         vmem a;
         a.set(0, true);
         a.set(16, true);
-        a.set(17, false);
+        a.set(16, false);
+        a.set(17, true);
         a.set(256, true);
-        cout << a.get(0) << a.get(16) << a.get(17) << a.get(256) << endl;
+        cout << a.get(0) << a.get(1) << a.get(17) << a.get(256) << endl;
+
+        a.set_range(1, {true, false, true, false});
+        for(bool a : a.get_range(1, 4)) cout << a;
+        cout << endl;
+
         return 2;
     }
 
@@ -263,19 +288,4 @@ void tss::gfunc(string name) {
         tss::set(tss::stack[0], str);
     } else if(name == "save") { savem(tss::stack[0]); }
     else if(name == "load") { loadm(tss::stack[0]); }
-    /* переделаю
-    else if(name == "make") { // n bytes -> number: $num1 $num2 var
-        int size = tss::stack.size();
-        if(size == 3) {
-            union {
-                char bytes[2];
-                short data;
-            }word;
-            word.bytes[0] = (char)(stoi(tss::stack[0]));
-            word.bytes[1] = (char)(stoi(tss::stack[1]));
-            tss::set(tss::stack[2], to_string(word.data));
-        }
-    } else if(name == "split") {
-
-    } */
 }

@@ -1,12 +1,9 @@
-.PHONY: default build
-default: build
+default: mainl miscl
 
-build: main_linux misc_linux
-
-main_linux:
+mainl:
 	g++ src/main.cpp -o bin/main -Ltinyss -ltinyss
 
-misc_linux:
+miscl:
 	cp -r exts bin
 	cp -r lang bin
 
