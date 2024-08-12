@@ -5,7 +5,6 @@
 #include <filesystem>
 #include "extension.hpp"
 #include "str.hpp"
-#define _clearmem fill(mem.begin(), mem.end(), 0);
 #define ecur elist[current]
 #define uchar unsigned char
 #define ushort unsigned short
@@ -26,17 +25,17 @@ struct vmem {
         mem.resize(size / 8);
     } void clear() { fill(mem.begin(), mem.end(), 0); }
 
-    void set(uint pos, bool val) {
+    void set(int pos, bool val) {
         if(pos / 8 < mem.size()) {
             if(val) mem[pos / 8] |= val << (pos % 8);
             else mem[pos / 8] &= ~(val << (pos % 8));
         }
         else cout << RED << lang[6] << RESET << endl;
-    } bool get(uint pos) {
+    } bool get(int pos) {
         if(pos / 8 < mem.size()) return (bool((1 << (pos % 8)) & mem[pos / 8]));
         else cout << RED << lang[6] << RESET << endl;
         return false;
-    } vector<bool> get_range(uint pos, uint range) {
+    } vector<bool> get_range(int pos, int range) {
         if((pos + range) / 8 < mem.size()) {
             vector<bool> r;
             while(range != 0) {
@@ -45,13 +44,13 @@ struct vmem {
             } return r;
         } else cout << RED << lang[6] << RESET << endl;
         return {};
-    } void set_range(uint pos, vector<bool> range) {
+    } void set_range(int pos, vector<bool> range) {
         if((pos + range.size()) / 8 < mem.size()) {
             for(bool a : range) {
                 set(pos, a); ++pos;
             }
         } else cout << RED << lang[6] << RESET << endl;
-    }
+    } size_t size() { return mem.size(); }
 
     vmem() { resize(256); }
     vmem(uint size) { resize(size); }
@@ -60,7 +59,7 @@ struct vmem {
 vector<ext> elist;
 short current = 0;
 int mems = 256;
-vector<uchar> mem;
+vmem mem;
 
 void einit();
 int init() {
@@ -103,7 +102,7 @@ int init() {
 
     einit();
     mem.resize(mems);
-    _clearmem;
+    mem.clear();
     return 0;
 }
 
@@ -142,14 +141,14 @@ void einit() {
 void savem(string name) {
     if(fs::exists(name)) remove(name.c_str());
     ofstream file(name);
-    for(uchar a : mem) { file << a; }
+    //for(uchar a : mem) { file << a; }
     file.close();
 } void loadm(string name) {
     ifstream file(name);
     string temp;
     getline(file, temp);
     mem.clear();
-    for(uchar a : temp) mem.push_back(a);
+    //for(uchar a : temp) mem.push_back(a);
 }
 
 void loop() {
@@ -187,18 +186,20 @@ void loop() {
                 }
             }
             if(!f) cout << YELLOW << lang[4] << RESET << endl;
-        } else if(a[0] == "cl") {_clearmem; }
+        } else if(a[0] == "cl") { mem.clear(); }
         else if(a[0] == "set") {
             int pos = stoi(a[1]);
             int val = stoi(a[2]);
-            if(pos < mems) mem[pos] = (uchar)val;
-            else cout << RED << lang[5] << RESET << endl;
+            //if(pos < mems) mem[pos] = (uchar)val;
+            //else cout << RED << lang[5] << RESET << endl;
         } else if(a[0] == "print") {
             int pos = stoi(a[1]);
             int len = stoi(a[2]);
             if(pos + len <= mems) {
-                for(int i = 0; i < len - 1; i++) cout << to_string((ushort)(mem[pos + i])) << " ";
-                cout << to_string((ushort)(mem[pos])) << endl;
+            	for(bool a : mem.get_range(pos, len)) cout << a;
+            	cout << endl;
+                //for(int i = 0; i < len - 1; i++) cout << to_string((ushort)(mem[pos + i])) << " ";
+                //cout << to_string((ushort)(mem[pos])) << endl;
             } else cout << RED << lang[5] << RESET << endl;
         } else if(a[0] == "res") {
             int size = stoi(a[1]);
@@ -247,19 +248,73 @@ void loop() {
     }
 }
 
+string btos(vector<bool> bits) {
+	string h = "";
+	if(bits.size() != 0) {
+		for(bool a : bits) {
+			if(a) h += "1";
+			else h += "0";
+		}
+	} return h;
+} vector<bool> stob(string str) {
+	vector<bool> h;
+	for(char a : str) {
+		if(a == '1') h.push_back(true);
+		else if(a == '0') h.push_back(false);
+	} return h;
+} int btoi(vector<bool> bits) {
+	int h = 0;
+	int s = bits.size() - 1;
+	for(bool a : bits) {
+		h += (int)a * (2^s);
+		s--;
+	} return h;
+} vector<bool> itob(int num) {
+	vector<bool> h;
+	while(num != 0) {
+		h.push_back(num & 2);
+		num = num / 2;
+	} return h;
+}
+
 void tss::gfunc(string name) {
-    if(name == "getb") { // get byte: $pos var
+    if(name == "getb") { // get bits: $pos $range var
         int pos = stoi(tss::stack[0]);
+		int range = stoi(tss::stack[1]);
         if(pos < mems) {
             tss::set(
-                tss::stack[1],
-                to_string(mem[pos])
+                tss::stack[2],
+                btos(mem.get_range(pos, range))
             );
         } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
-    } else if(name == "setb") { // set byte: $pos $num
+    } else if(name == "setb") { // set bits: $pos $bits
         int pos = stoi(tss::stack[0]);
         if(pos < mems) {
-            mem[pos] = (char)(stoi(tss::stack[1]));
+            mem.set_range(pos, stob(tss::stack[1]));
+        } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
+    } else if(name == "btoi") { // bits to integer: $bits var
+    	tss::set(
+    		tss::stack[1],
+    		to_string(btoi(stob(tss::stack[0])))
+    	);
+    } else if(name == "itob") { // integer to bits: $num var
+    	tss::set(
+    		tss::stack[1],
+    		btos(itob(stoi(tss::stack[0])))
+    	);
+    } else if(name == "getn") { // get num: $pos $range var
+    	int pos = stoi(tss::stack[0]);
+		int range = stoi(tss::stack[1]);
+        if(pos < mems) {
+            tss::set(
+                tss::stack[2],
+                to_string(btoi(mem.get_range(pos, range)))
+            );
+        } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
+    } else if(name == "setn") { // set num: $pos $num
+    	int pos = stoi(tss::stack[0]);
+        if(pos < mems) {
+            mem.set_range(pos, itob(stoi(tss::stack[1])));
         } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
     } else if(name == "resmem") { // resize memory: $val
         int size = stoi(tss::stack[0]);

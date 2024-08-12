@@ -1,0 +1,18 @@
+e125.test
+Расширение для тестирования "новой памяти"
+goto main
+:init
+ret
+
+:main
+	gpushb 0
+	gpushb 3
+	gcall setn
+	gpushb 0
+	gpushb 2
+	gpushb kran
+	gcall getn
+	gpushb $kran
+	gcall putstr
+exit
+
