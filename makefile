@@ -1,4 +1,4 @@
-default: mainl miscl
+default: $(shell mkdir -p bin) mainl miscl
 
 mainl:
 	g++ src/main.cpp -o bin/main -Ltinyss -ltinyss
