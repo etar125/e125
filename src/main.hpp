@@ -308,37 +308,44 @@ void tss::gfunc(string name) {
 			int pos = stoi(tss::stack[0]);
 			if(pos < mems) {
 			    nmem.set_range(pos, stob(tss::stack[1]));
-			} else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
+			} else cout << RED << "[" << ecur.name << ", setb] " << lang[5] << ": $pos" << RESET << endl;
 	    } else {
 	    	int pos = stoi(tss::stack[0]);
 			if(pos < mems) {
 			    omem[pos] = (char)(stoi(tss::stack[1]));
-			} else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
+			} else cout << RED << "[" << ecur.name << ", setb] " << lang[5] << ": $pos" << RESET << endl;
 	    }
 	} else if(name == "btoi") { // bits to integer: $bits var
-		tss::set(
+		if(test) tss::set(
 			tss::stack[1],
 			to_string(btoi(stob(tss::stack[0])))
 		);
+		else cout << RED << "[" << ecur.name << ", btoi] " << lang[7] << RESET << endl;
 	} else if(name == "itob") { // integer to bits: $num var
+		if(test)
 		tss::set(
 			tss::stack[1],
 			btos(itob(stoi(tss::stack[0])))
 		);
+		else cout << RED << "[" << ecur.name << ", itob] " << lang[7] << RESET << endl;
 	} else if(name == "getn") { // get num: $pos $range var
-		int pos = stoi(tss::stack[0]);
-		int range = stoi(tss::stack[1]);
-	    if(pos < mems) {
-	        tss::set(
-	            tss::stack[2],
-	            to_string(btoi(nmem.get_range(pos, range)))
-	        );
-	    } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
+		if(test) {
+			int pos = stoi(tss::stack[0]);
+			int range = stoi(tss::stack[1]);
+			if(pos < mems) {
+			    tss::set(
+			        tss::stack[2],
+			        to_string(btoi(nmem.get_range(pos, range)))
+			    );
+			} else cout << RED << "[" << ecur.name << ", getn] " << lang[5] << ": $pos" << RESET << endl;
+	    } else cout << RED << "[" << ecur.name << ", getn] " << lang[7] << RESET << endl;
 	} else if(name == "setn") { // set num: $pos $num
-		int pos = stoi(tss::stack[0]);
-	    if(pos < mems) {
-	        nmem.set_range(pos, itob(stoi(tss::stack[1])));
-	    } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
+		if(test) {
+			int pos = stoi(tss::stack[0]);
+			if(pos < mems) {
+			    nmem.set_range(pos, itob(stoi(tss::stack[1])));
+			} else cout << RED << "[" << ecur.name << ", setn] " << lang[5] << ": $pos" << RESET << endl;
+	    } else cout << RED << "[" << ecur.name << ", setn] " << lang[7] << RESET << endl;
 	} else if(name == "resmem") { // resize memory: $val
         int size = stoi(tss::stack[0]);
         if(!test) omem.resize(size);
