@@ -194,7 +194,7 @@ void loop() {
                     f = true;
                     ecur.code.insert(ecur.code.begin(), "exit");
                     ecur.code.insert(ecur.code.begin(), "call init");
-                    TSSException te = ecur.ss.docode(ecur.code);
+                    TSSException te = ecur.ss.docode(ecur.code, debug);
                     if(te.index != -1) {
                         cout << RED << "ext: " << ecur.name << endl;
                         cout << "index " << to_string(te.index) << " token:[ ";
@@ -240,7 +240,7 @@ void loop() {
 
             if(pos < mems) {
                 ecur.ss.set("pos", to_string(pos));
-                TSSException te = ecur.ss.docode(ecur.code);
+                TSSException te = ecur.ss.docode(ecur.code, debug);
                 if(te.index != -1) {
                     cout << RED << "ext: " << ecur.name << endl;
                     cout << "index " << to_string(te.index) << " token:[ ";
@@ -257,7 +257,7 @@ void loop() {
         else if(a[0] == "call") {
             ecur.code.insert(ecur.code.begin(), "exit");
             ecur.code.insert(ecur.code.begin(), "call " + a[1]);
-            TSSException te = ecur.ss.docode(ecur.code);
+            TSSException te = ecur.ss.docode(ecur.code, debug);
             if(te.index != -1) {
                 cout << RED << "ext: " << ecur.name << endl;
                 cout << "index " << to_string(te.index) << " token:[ ";
@@ -269,7 +269,11 @@ void loop() {
             }
             ecur.code.erase(ecur.code.begin(), ecur.code.begin() + 2);
         } else if(a[0] == "cls" || a[0] == "clear") { cout << "\033[H\033[J"; }
-        else if (a[0] == "ver") { cout << MAGENTA << ver << RESET << endl; }
+        else if (a[0] == "ver") {
+        	cout << MAGENTA << ver;
+			if(test) cout << " TEST";
+			if(debug) cout << " DEBUG";
+			cout << RESET << endl; }
         else if (a[0] == "save") { savem(a[1]); }
         else if (a[0] == "load") { loadm(a[1]); }
         else if(a[0] == "help") {
@@ -280,64 +284,62 @@ void loop() {
 
 
 void tss::gfunc(string name) {
-	if(test) {
-		if(name == "getb") { // get bits: $pos $range var
-		    int pos = stoi(tss::stack[0]);
-			int range = stoi(tss::stack[1]);
-		    if(pos < mems) {
-		        tss::set(
-		            tss::stack[2],
-		            btos(nmem.get_range(pos, range))
-		        );
-		    } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
-		} else if(name == "setb") { // set bits: $pos $bits
-		    int pos = stoi(tss::stack[0]);
-		    if(pos < mems) {
-		        nmem.set_range(pos, stob(tss::stack[1]));
-		    } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
-		} else if(name == "btoi") { // bits to integer: $bits var
-			tss::set(
-				tss::stack[1],
-				to_string(btoi(stob(tss::stack[0])))
-			);
-		} else if(name == "itob") { // integer to bits: $num var
-			tss::set(
-				tss::stack[1],
-				btos(itob(stoi(tss::stack[0])))
-			);
-		} else if(name == "getn") { // get num: $pos $range var
+	if(name == "getb") { // get bits: $pos $range var
+		if(test) {
 			int pos = stoi(tss::stack[0]);
 			int range = stoi(tss::stack[1]);
-		    if(pos < mems) {
-		        tss::set(
-		            tss::stack[2],
-		            to_string(btoi(nmem.get_range(pos, range)))
-		        );
-		    } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
-		} else if(name == "setn") { // set num: $pos $num
-			int pos = stoi(tss::stack[0]);
-		    if(pos < mems) {
-		        nmem.set_range(pos, itob(stoi(tss::stack[1])));
-		    } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
-		}
-    } else {
-    	if(name == "getb") { // get byte: $pos var
-		    int pos = stoi(tss::stack[0]);
+			if(pos < mems) {
+			    tss::set(
+			        tss::stack[2],
+			        btos(nmem.get_range(pos, range))
+			    );
+			} else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
+	    } else {
+	    	int pos = stoi(tss::stack[0]);
 		    if(pos < mems) {
 		        tss::set(
 		            tss::stack[1],
 		            to_string(omem[pos])
 		        );
 		    } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
-		} else if(name == "setb") { // set byte: $pos $num
-		    int pos = stoi(tss::stack[0]);
-		    if(pos < mems) {
-		        omem[pos] = (char)(stoi(tss::stack[1]));
-		    } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
-		}
-    }
-    
-    if(name == "resmem") { // resize memory: $val
+	    }
+	} else if(name == "setb") { // set bits: $pos $bits
+		if(test) {
+			int pos = stoi(tss::stack[0]);
+			if(pos < mems) {
+			    nmem.set_range(pos, stob(tss::stack[1]));
+			} else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
+	    } else {
+	    	int pos = stoi(tss::stack[0]);
+			if(pos < mems) {
+			    omem[pos] = (char)(stoi(tss::stack[1]));
+			} else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
+	    }
+	} else if(name == "btoi") { // bits to integer: $bits var
+		tss::set(
+			tss::stack[1],
+			to_string(btoi(stob(tss::stack[0])))
+		);
+	} else if(name == "itob") { // integer to bits: $num var
+		tss::set(
+			tss::stack[1],
+			btos(itob(stoi(tss::stack[0])))
+		);
+	} else if(name == "getn") { // get num: $pos $range var
+		int pos = stoi(tss::stack[0]);
+		int range = stoi(tss::stack[1]);
+	    if(pos < mems) {
+	        tss::set(
+	            tss::stack[2],
+	            to_string(btoi(nmem.get_range(pos, range)))
+	        );
+	    } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
+	} else if(name == "setn") { // set num: $pos $num
+		int pos = stoi(tss::stack[0]);
+	    if(pos < mems) {
+	        nmem.set_range(pos, itob(stoi(tss::stack[1])));
+	    } else cout << RED << "[" << ecur.name << ", getb] " << lang[5] << ": $pos" << RESET << endl;
+	} else if(name == "resmem") { // resize memory: $val
         int size = stoi(tss::stack[0]);
         if(!test) omem.resize(size);
         else nmem.resize(size);
