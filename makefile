@@ -1,15 +1,17 @@
+FLAGS=-Os -ffunction-sections -Wl,--gc-sections,--strip-all -fno-asynchronous-unwind-tables
+
 default: $(shell mkdir -p bin) mainl miscl
 
-mainl:
-	g++ src/main.cpp -o bin/main -Ltinyss -ltinyss
+mainl: src/main.cpp src/main.hpp src/extension.hpp src/str.hpp tinyss/libtinyss.a tinyss/token.hpp tinyss/tinyss.hpp
+	g++ src/main.cpp -o bin/main -Ltinyss -ltinyss $(FLAGS)
 
 miscl:
 	cp -r exts bin
 	cp -r lang bin
+	
+clean:
+	rm -rf $(wildcard bin/*)
 
-# я пока не протестил на винде, поэтому пусть будет закомментировано
-#main_win:
-#	i686-w64-mingw32-g++ main.cpp -o bin/main.exe -Igcc_s_dw2-1 -Istdc++-6
 
 #asm_linux:
 #	clang++ extra/assembler.cpp -o bin/asm
