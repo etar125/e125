@@ -177,6 +177,7 @@ string btos(vector<bool> bits) {
 void loop() {
     string str;
     vector<string> a;
+    cout << lang[9] << endl;
     while(true) {
         cout << "# ";
         getline(cin, str);
@@ -186,7 +187,7 @@ void loop() {
             for(ext e : elist) cout << e.name << "   " << e.desc << endl;
             cout << RESET;
         }
-        else if(a[0] == "ch") {
+        else if(a[0] == "ch" && a.size() == 2) {
             bool f = false;
             for(ushort i = 0; i < elist.size(); i++) {
                 if(elist[i].name == a[1]) {
@@ -213,7 +214,7 @@ void loop() {
         	if(!test) { _clearmem; }
         	else { }
         }
-        else if(a[0] == "set") {
+        else if(a[0] == "set" && a.size() == 3) {
             int pos = stoi(a[1]);
             int val = stoi(a[2]);
             if(pos < mems) { 
@@ -221,7 +222,7 @@ void loop() {
             	else { }
             }
             else cout << RED << lang[5] << RESET << endl;
-        } else if(a[0] == "print") {
+        } else if(a[0] == "print" && a.size() == 3) {
             int pos = stoi(a[1]);
             int len = stoi(a[2]);
             if(pos + len <= mems) {
@@ -230,12 +231,12 @@ void loop() {
             	else { int i = 0; for(; i < len - 1; i++) cout << to_string((ushort)(omem[pos + i])) << " ";
                 cout << to_string((ushort)(omem[pos + i])) << endl; }
             } else cout << RED << lang[5] << RESET << endl;
-        } else if(a[0] == "res") {
+        } else if(a[0] == "res" && a.size() == 2) {
             int size = stoi(a[1]);
             if(!test) omem.resize(size);
             else nmem.resize(size);
             mems = size;
-        } else if(a[0] == "run") {
+        } else if(a[0] == "run" && a.size() == 2) {
             int pos = stoi(a[1]);
 
             if(pos < mems) {
@@ -254,7 +255,7 @@ void loop() {
         } else if(a[0] == "cur") {
             cout << BLUE << ecur.name << "   " << ecur.desc << RESET << endl;
         } else if(a[0] == "exit") { break; }
-        else if(a[0] == "call") {
+        else if(a[0] == "call" && a.size() == 2) {
             ecur.code.insert(ecur.code.begin(), "exit");
             ecur.code.insert(ecur.code.begin(), "call " + a[1]);
             TSSException te = ecur.ss.docode(ecur.code, debug);
@@ -274,12 +275,12 @@ void loop() {
 			if(test) cout << " TEST";
 			if(debug) cout << " DEBUG";
 			cout << RESET << endl; }
-        else if (a[0] == "save") { savem(a[1]); }
-        else if (a[0] == "load") { loadm(a[1]); }
+        else if (a[0] == "save" && a.size() == 2) { savem(a[1]); }
+        else if (a[0] == "load" && a.size() == 2) { loadm(a[1]); }
         else if(a[0] == "help") {
             cout << "list\nch name\ncl\nset pos val\nprint pos len\nres size\nrun pos\ncur\ncall name\ncls\nclear\nver\nsave filename\nload filename\nexit" << endl;
-        }
-    }
+        } else { cout << RED << lang[8] << RESET << endl; }
+	}
 }
 
 
