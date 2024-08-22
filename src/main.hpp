@@ -14,8 +14,8 @@
 using namespace std;
 namespace fs = filesystem;
 
-string ver = "e125 v4.00_24813";
-string lang[10]={"MISSING"};
+string ver = "e125 v4.00_24822";
+string lang[22]={"MISSING"};
 bool debug = false;
 bool test = false;
 
@@ -278,8 +278,21 @@ void loop() {
         else if (a[0] == "save" && a.size() == 2) { savem(a[1]); }
         else if (a[0] == "load" && a.size() == 2) { loadm(a[1]); }
         else if(a[0] == "help") {
-            cout << "list\nch name\ncl\nset pos val\nprint pos len\nres size\nrun pos\ncur\ncall name\ncls\nclear\nver\nsave filename\nload filename\nexit" << endl;
-        } else { cout << RED << lang[8] << RESET << endl; }
+            //cout << "list\nch name\ncl\nset pos val\nprint pos len\nres size\nrun pos\ncur\ncall name\ncls\nclear\nver\nsave filename\nload filename\nexit" << endl;
+            cout << "list                " << lang[10] << endl
+            	 << "ch <val>            " << lang[11] << endl
+            	 << "cur                 " << lang[12] << endl << endl
+            	 << "cl                  " << lang[13] << endl
+            	 << "set <pos> <val>     " << lang[14] << endl
+            	 << "print <pos> <len>   " << lang[15] << endl
+            	 << "res <len>           " << lang[16] << endl
+            	 << "run <pos>           " << lang[17] << endl
+            	 << "call <val>          " << lang[18] << endl
+            	 << "save/load <file>    " << lang[19] << endl << endl
+            	 << "cls/clear           " << lang[20] << endl
+            	 << "ver                 " << lang[21] << endl
+            	 << "exit                " << lang[22] << endl;
+        } else { cout << YELLOW << lang[8] << RESET << endl; }
 	}
 }
 

@@ -7,4 +7,17 @@ Incorrect arguments
 Out of bounds
 function isn't available
 Unknown command or incorrect arguments
-Type "help" to see all the commands
+Type "help" to see all commands
+Displays list of extensions
+Selects extension
+Displays current extension
+Clears memory
+Sets value of cell
+Outputs value of cells
+Changes memory size
+Runs code
+Calls function from extension
+Saves/loads memory
+Clears screen
+Outputs e125 version
+Exits e125
