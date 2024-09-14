@@ -10,12 +10,12 @@
 #define uchar unsigned char
 #define ushort unsigned short
 #define uint unsigned int
+#define ver "e125 v4.00_24822"
 
 using namespace std;
 namespace fs = filesystem;
 
-string ver = "e125 v4.00_24822";
-string lang[22]={"MISSING"};
+string lang[23]={"MISSING"};
 bool debug = false;
 bool test = false;
 

@@ -24,9 +24,9 @@ vector<string> strsp(string s, char w) {
     return res;
 }
 
-string RED = "\033[91m";
-string GREEN = "\033[92m";
-string YELLOW = "\033[93m";
-string BLUE = "\033[94m";
-string MAGENTA = "\033[95m";
-string RESET = "\033[0m";
+#define RED "\033[91m"
+#define GREEN "\033[92m"
+#define YELLOW "\033[93m"
+#define BLUE "\033[94m"
+#define MAGENTA "\033[95m"
+#define RESET "\033[0m"
