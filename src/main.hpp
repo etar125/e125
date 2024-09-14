@@ -10,7 +10,7 @@
 #define uchar unsigned char
 #define ushort unsigned short
 #define uint unsigned int
-#define ver "e125 v4.00_24822"
+#define ver "e125 v4.00_24914"
 
 using namespace std;
 namespace fs = filesystem;
