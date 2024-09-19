@@ -1,5 +1,4 @@
-FLAGS=-Os -ffunction-sections -Wl,--gc-sections,--strip-all -fno-asynchronous-unwind-tables
-
+FLAGS=-Os -ffunction-sections -Wl,--gc-sections,--strip-all -fno-asynchronous-unwind-tables -Wall -Wextra
 default: $(shell mkdir -p bin) mainl miscl
 
 updtss:
@@ -11,7 +10,7 @@ updtss:
 	rm -f tinyss/README.md
 
 library: tinyss/makefile
-	$(MAKE) -C tinyss library
+	$(MAKE) -C tinyss library FLAGS="$(FLAGS)"
 
 mainl: src/main.cpp src/main.hpp src/extension.hpp src/str.hpp library
 	g++ src/main.cpp -o bin/e125 -Ltinyss/bin -Itinyss/bin -ltinyss $(FLAGS)
